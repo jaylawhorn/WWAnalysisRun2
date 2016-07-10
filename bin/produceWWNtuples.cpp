@@ -237,7 +237,7 @@ int main (int argc, char** argv)
     looseMuon.clear();
     looseEle.clear();
 
-    if (jentry2%100 == 0) std::cout << "read entry: " << jentry2 <<"/"<<totalEntries<<std:: endl;
+    if (jentry2%10000 == 0) std::cout << "read entry: " << jentry2 <<"/"<<totalEntries<<std:: endl;
     
     //*********************************
     // JSON FILE AND DUPLIACTES IN DATA
@@ -327,16 +327,17 @@ int main (int argc, char** argv)
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug ele: "<<i<<std::endl;
 	if (applyTrigger==1)
 	  for (unsigned int t=0; t<ReducedTree->TriggerProducerTriggerNames->size(); t++)
-	    if(TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele27_eta2p1_WP75_Gsf_v") || 
-	       TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele27_eta2p1_WPLoose_Gsf_v") ||
-	       TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele105_CaloIdVT_GsfTrkIdT_v") )
+	    if(//TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele27_eta2p1_WP75_Gsf_v") || 
+	       TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele27_eta2p1_WPLoose_Gsf_v") 
+	       //|| TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele105_CaloIdVT_GsfTrkIdT_v") 
+	       )
 	      if (ReducedTree->TriggerProducerTriggerPass->at(t)==1) passTrigger=1; //trigger
 	if (passTrigger==0 && applyTrigger==1) continue;
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug ele: "<<i<<std::endl;
 	// if (ReducedTree->TriggerProducerTriggerPass->at(0)==0) continue; //trigger
 	if (ReducedTree->Electrons_isTight[i]==false) continue;       
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug ele: "<<i<<std::endl;
-        if (ReducedTree->ElectronsPt[i]<=45) continue;
+        if (ReducedTree->ElectronsPt[i]<=30) continue;
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug ele: "<<i<<std::endl;
         if (fabs(ReducedTree->ElectronsEta[i])>=2.1) continue;
 	// if (fabs(ReducedTree->ElectronsEta[i])>=2.5) continue; //this is already in the HEEP requirement
@@ -359,7 +360,7 @@ int main (int argc, char** argv)
       for (int i=0; i<ReducedTree->MuonsNum; i++) {
 	if (applyTrigger==1)
 	  for (unsigned int t=0; t<ReducedTree->TriggerProducerTriggerNames->size(); t++)
-	    if(TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_IsoMu27"))
+	    if(TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_IsoMu22_v"))
 	      if (ReducedTree->TriggerProducerTriggerPass->at(t)==1) passTrigger=1; //trigger
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug mu: "<<i<<std::endl;
 	if (passTrigger==0 && applyTrigger==1) continue;
@@ -370,7 +371,7 @@ int main (int argc, char** argv)
 	// if (ReducedTree->Muons_isPFMuon[i]==false) continue; //not in the synch ntuple!!
         if ((ReducedTree->Muons_trackIso[i]/ReducedTree->MuonsPt[i])>=0.1) continue;
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug mu: "<<i<<std::endl;
-        if (ReducedTree->MuonsPt[i]<40) continue;
+        if (ReducedTree->MuonsPt[i]<25) continue;
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug mu: "<<i<<std::endl;
         if (fabs(ReducedTree->MuonsEta[i])>=2.1) continue;
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug mu: "<<i<<std::endl;
@@ -500,7 +501,7 @@ int main (int argc, char** argv)
       if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug loose el: "<<i<<std::endl; count++;
       if (ReducedTree->Electrons_isLoose[i]==false) continue; //NB: CHANGE TO VETO!!!
       if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug loose el: "<<i<<", pt: "<<ReducedTree->ElectronsPt[i]<<", eta: "<<ReducedTree->ElectronsEta[i]<<std::endl; count++;
-      if (ReducedTree->ElectronsPt[i]<30) continue;       
+      if (ReducedTree->ElectronsPt[i]<27) continue;       
       // if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<i<<std::endl; count++;
       // if (fabs(ReducedTree->ElectronsEta[i])>=2.5) continue;
       if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug loose el: "<<i<<std::endl; count++;
@@ -516,7 +517,7 @@ int main (int argc, char** argv)
       if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug loose mu: "<<i<<std::endl; count++;
       if (fabs(ReducedTree->MuonsEta[i])>=2.4) continue;
       if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug loose mu: "<<i<<std::endl; count++;
-      if (ReducedTree->MuonsPt[i]<20) continue;
+      if (ReducedTree->MuonsPt[i]<22) continue;
       if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug loose mu: "<<i<<std::endl; count++;
       MU.SetPtEtaPhiE(ReducedTree->MuonsPt[i],ReducedTree->MuonsEta[i],ReducedTree->MuonsPhi[i],ReducedTree->MuonsE[i]);
       looseMuon.push_back(MU);
@@ -665,8 +666,8 @@ int main (int argc, char** argv)
     //////////////THE PUPPI MET
     
     //preselection on met
-    if (ReducedTree->METPt < 30 && ReducedTree->METpuppiPt < 30) continue;
-    cutEff[3]++;
+//    if (ReducedTree->METPt < 30 && ReducedTree->METpuppiPt < 30) continue;	// Commented by RK
+    cutEff[3]++;								// Commented by RK
     if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;
     
     // Calculate Neutrino Pz using all the possible choices : 
@@ -794,7 +795,7 @@ int main (int argc, char** argv)
     for (unsigned int i=0; i<ReducedTree->AK8JetsNum; i++)
     {
       bool isCleanedJet = true;
-      if (ReducedTree->AK8Jets_PtCorr[i]<100 || fabs(ReducedTree->AK8JetsEta[i])>2.4)  continue; //be careful: this is not inside the synchntuple code
+      if (ReducedTree->AK8Jets_PtCorr[i]<30 || fabs(ReducedTree->AK8JetsEta[i])>2.4)  continue; //be careful: this is not inside the synchntuple code
       if (ReducedTree->AK8Jets_prunedMass[i]>tempMass) {
         if ( (ReducedTree->AK8JetsEta[i]>0 && WWTree->l_eta<0) || 
              (ReducedTree->AK8JetsEta[i]<0 && WWTree->l_eta>0)) { //jet and lepton in opposite hemisphere for ttb
@@ -863,7 +864,7 @@ int main (int argc, char** argv)
     for (unsigned int i=0; i<ReducedTree->PuppiAK8JetsNum; i++)
     {
       bool isCleanedJet = true;
-      if (ReducedTree->PuppiAK8Jets_PtCorr[i]<100 || fabs(ReducedTree->PuppiAK8JetsEta[i])>2.4)  continue; //be careful: this is not inside the synchntuple code
+      if (ReducedTree->PuppiAK8Jets_PtCorr[i]<30 || fabs(ReducedTree->PuppiAK8JetsEta[i])>2.4)  continue; //be careful: this is not inside the synchntuple code
       if (ReducedTree->PuppiAK8Jets_prunedMass[i]>tempMass) {
         if ( (ReducedTree->PuppiAK8JetsEta[i]>0 && WWTree->l_eta<0) || 
              (ReducedTree->PuppiAK8JetsEta[i]<0 && WWTree->l_eta>0)) { //jet and lepton in opposite hemisphere for ttb
@@ -925,7 +926,7 @@ int main (int argc, char** argv)
     // FAT JET SELECTION
     bool isGoodFatJet = true;
     if (nGoodAK8jets==0 && nGoodPuppiAK8jets==0) isGoodFatJet = false; //not found a good hadronic W candidate
-    if (WWTree->ungroomed_jet_pt<150 && WWTree->ungroomed_PuppiAK8_jet_pt<150) isGoodFatJet = false;
+    if (WWTree->ungroomed_jet_pt<50 && WWTree->ungroomed_PuppiAK8_jet_pt<50) isGoodFatJet = false;
     if (isGoodFatJet) cutEff[5]++;
     if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;
     
@@ -1139,7 +1140,7 @@ int main (int argc, char** argv)
     // UNMERGED JETS SELECTION
     bool isGoodUnmergedJets = true;
     if (nGoodAK4jets<2 && nGoodPuppiAK4jets<2) isGoodUnmergedJets = false; //not found a good hadronic W candidate
-    if (WWTree->AK4_jetjet_pt<150 && WWTree->PuppiAK4_jetjet_pt<150) isGoodUnmergedJets = false;
+    if (WWTree->AK4_jetjet_pt<30 && WWTree->PuppiAK4_jetjet_pt<30) isGoodUnmergedJets = false;
     if (isGoodUnmergedJets) cutEff[6]++;
     if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;
     
