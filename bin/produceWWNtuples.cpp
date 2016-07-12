@@ -237,7 +237,7 @@ int main (int argc, char** argv)
     looseMuon.clear();
     looseEle.clear();
 
-    if (jentry2%10000 == 0) std::cout << "read entry: " << jentry2 <<"/"<<totalEntries<<std:: endl;
+    if (jentry2%1000 == 0) std::cout << "read entry: " << jentry2 <<"/"<<totalEntries<<std:: endl;
     
     //*********************************
     // JSON FILE AND DUPLIACTES IN DATA
@@ -333,6 +333,8 @@ int main (int argc, char** argv)
 	       )
 	      if (ReducedTree->TriggerProducerTriggerPass->at(t)==1) passTrigger=1; //trigger
 	if (passTrigger==0 && applyTrigger==1) continue;
+	//if ((passTrigger==0 && applyTrigger==1) || (passTrigger==0 && applyTrigger==0)) continue;
+	//std::cout<<"MC test Pass>>>>> passTrigger = "<<passTrigger<<"\tapplyTrigger = "<<applyTrigger<<std::endl;
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug ele: "<<i<<std::endl;
 	// if (ReducedTree->TriggerProducerTriggerPass->at(0)==0) continue; //trigger
 	if (ReducedTree->Electrons_isTight[i]==false) continue;       
@@ -926,7 +928,7 @@ int main (int argc, char** argv)
     // FAT JET SELECTION
     bool isGoodFatJet = true;
     if (nGoodAK8jets==0 && nGoodPuppiAK8jets==0) isGoodFatJet = false; //not found a good hadronic W candidate
-    if (WWTree->ungroomed_jet_pt<50 && WWTree->ungroomed_PuppiAK8_jet_pt<50) isGoodFatJet = false;
+    if (WWTree->ungroomed_jet_pt<30 && WWTree->ungroomed_PuppiAK8_jet_pt<30) isGoodFatJet = false;
     if (isGoodFatJet) cutEff[5]++;
     if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;
     
@@ -1145,6 +1147,7 @@ int main (int argc, char** argv)
     if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;
     
     if (!isGoodFatJet && !isGoodUnmergedJets) continue;
+    //std::cout<<"isGoodFatJet = "<<isGoodFatJet<<"\tisGoodUnmergedJets = "<<isGoodUnmergedJets<<std::endl;
     cutEff[7]++;
     if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;    
     
