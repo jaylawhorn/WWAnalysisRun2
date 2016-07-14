@@ -146,6 +146,7 @@ int main (int argc, char** argv)
   char command1[3000];
   sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
   std::cout<<command1<<std::endl;
+  std::cout<<"Scale Factor for this sample = "<<weight<<endl;
   system(command1);
   char list1[2000];
   sprintf (list1, "listTemp_%s.txt", outputFile.c_str());
@@ -218,7 +219,7 @@ int main (int argc, char** argv)
   badEventsFile.close();
 
   int nNegEvents=0; 
-  int nEvents=0;
+  int nEvents=0;	nEvents=totalEntries;
   Long64_t jentry2=0;
   
   //---------start loop on events------------
@@ -789,11 +790,15 @@ int main (int argc, char** argv)
     ///////////THE FAT JET - AK8
     float tempPt=0., tempMass=0.;
     int nGoodAK8jets=0;
+    WWTree->njets=0;
+    //WWTree->njets_unmerged=0;
     int hadWpos = -1;
     int ttb_jet_position=-1; //position of AK8 jet in ttbar-topology
     // if (ReducedTree->AK8JetsNum < 1 ) continue; 
     if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;
     
+//    if (ReducedTree->AK8JetsNum >= 2)
+//    std::cout<<"nAK8 jets before selection = "<<ReducedTree->AK8JetsNum<<std::endl;
     for (unsigned int i=0; i<ReducedTree->AK8JetsNum; i++)
     {
       bool isCleanedJet = true;
@@ -840,8 +845,12 @@ int main (int argc, char** argv)
       
       tempPt = WWTree->ungroomed_jet_pt;
       nGoodAK8jets++;
+      WWTree->njets++;
+      //WWTree->njets_unmerged = ReducedTree->AK8JetsNum;
       hadWpos = i;
     }
+//    if (nGoodAK8jets>=2)
+//    std::cout<<"nAK8 jets = "<<nGoodAK8jets<<std::endl;
     if (WWTree->ungroomed_jet_pt > 0)
     {
       JET.SetPtEtaPhiE(WWTree->ungroomed_jet_pt,WWTree->ungroomed_jet_eta,WWTree->ungroomed_jet_phi,WWTree->ungroomed_jet_e);
@@ -938,6 +947,9 @@ int main (int argc, char** argv)
     float tempPt1 = 0.; int pos1 = -1;
     float tempPt2 = 0.; int pos2 = -1;
     int nGoodAK4jets=0;
+    //WWTree->njets=0;
+    WWTree->njets_unmerged=0;
+
     for (unsigned int i=0; i<ReducedTree->JetsNum; i++) //loop on AK4 jet
     {
       bool isCleanedJet = true;
@@ -987,6 +999,8 @@ int main (int argc, char** argv)
         }
         pos1 = i;
         nGoodAK4jets++;
+        //WWTree->njets++;
+        WWTree->njets_unmerged++;
       }
       else if (ReducedTree->Jets_PtCorr[i]>tempPt2)
       {
@@ -1000,6 +1014,9 @@ int main (int argc, char** argv)
         tempPt2 = WWTree->AK4_jet2_pt;
         pos2 = i;
         nGoodAK4jets++;
+        //WWTree->njets++;
+        //WWTree->njets_unmerged = ReducedTree->JetsNum;
+        WWTree->njets_unmerged++;
       }
     }
     
@@ -1228,12 +1245,12 @@ int main (int argc, char** argv)
     
     
     /////////VBF and b-tag section
-    WWTree->njets=0;
+    //WWTree->njets=0;
     WWTree->nBTagJet_loose=0;
     WWTree->nBTagJet_medium=0;
     WWTree->nBTagJet_tight=0;
     
-    WWTree->njets_unmerged=0;
+    //WWTree->njets_unmerged=0;
     WWTree->nBTagJet_loose_unmerged=0;
     WWTree->nBTagJet_medium_unmerged=0;
     WWTree->nBTagJet_tight_unmerged=0;
@@ -1294,7 +1311,7 @@ int main (int argc, char** argv)
       
       if (isCleanedFromUnmergedJets==true && fabs(ReducedTree->JetsEta[i])<2.4)
       {
-        WWTree->njets_unmerged++;
+        //WWTree->njets_unmerged++;
         if (ReducedTree->Jets_bDiscriminatorICSV[i]>0.605) WWTree->nBTagJet_loose_unmerged++;
         if (ReducedTree->Jets_bDiscriminatorICSV[i]>0.890) WWTree->nBTagJet_medium_unmerged++;
         if (ReducedTree->Jets_bDiscriminatorICSV[i]>0.970) WWTree->nBTagJet_tight_unmerged++;
@@ -1306,7 +1323,7 @@ int main (int argc, char** argv)
       
       if (fabs(ReducedTree->JetsEta[i])>=2.4) continue;
       
-      WWTree->njets++;
+      //WWTree->njets++;	//commented by RK
       AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[i],ReducedTree->JetsEta[i],ReducedTree->JetsPhi[i],ReducedTree->Jets_ECorr[i]);
       
       
@@ -1443,7 +1460,7 @@ int main (int argc, char** argv)
       float deltaR = JET_PuppiAK8.DeltaR(AK4);
       if (deltaR<0.8) continue; //the vbf jets must be outside the had W cone
       
-      if (WWTree->njets!=0) {
+      if (WWTree->njetsPuppi!=0) {
         if (WWTree->jet2_pt!=0) {
           WWTree->jet3_pt=ReducedTree->JetsPuppi_PtCorr[i];
           WWTree->jet3_eta=ReducedTree->JetsPuppiEta[i];
