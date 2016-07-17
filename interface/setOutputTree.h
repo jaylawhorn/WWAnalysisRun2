@@ -17,6 +17,9 @@ class setOutputTree {
   int lumi;
   int nPV;
   int issignal;
+  int isVBFJet;
+  int isVBFJet_NoB;
+  int isWJets;
   int issignal_PuppiAK8;
   int issignal_AK4jetjet;
   int issignal_PuppiAK4jetjet;

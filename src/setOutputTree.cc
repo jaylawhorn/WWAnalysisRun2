@@ -19,6 +19,9 @@ void setOutputTree::initializeVariables()
   lumi=-999;
   nPV=-999;
   issignal=0;
+  isVBFJet=0;
+  isVBFJet_NoB=0;
+  isWJets=0;
   issignal_PuppiAK8=0;
   issignal_AK4jetjet=0;
   issignal_PuppiAK4jetjet=0;
@@ -321,6 +324,9 @@ void setOutputTree::setBranches()
   fTree->Branch("lumi",&lumi,"lumi/I");
   fTree->Branch("nPV",&nPV,"nPV/I");
   fTree->Branch("issignal",&issignal,"issignal/I");
+  fTree->Branch("isVBFJet",&isVBFJet,"isVBFJet/I");
+  fTree->Branch("isVBFJet_NoB",&isVBFJet_NoB,"isVBFJet_NoB/I");
+  fTree->Branch("isWJets",&isWJets,"isWJets/I");
   fTree->Branch("issignal_PuppiAK8",&issignal_PuppiAK8,"issignal_PuppiAK8/I");
   fTree->Branch("issignal_AK4jetjet",&issignal_AK4jetjet,"issignal_AK4jetjet/I");
   fTree->Branch("issignal_PuppiAK4jetjet",&issignal_PuppiAK4jetjet,"issignal_PuppiAK4jetjet/I");
