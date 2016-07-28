@@ -146,6 +146,7 @@ int main (int argc, char** argv)
 
   char command1[3000];
   sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
+  //sprintf(command1, "ls /tmp/rasharma/ueos/user/r/rasharma/aQGC_Studies/FirstStepOutput/%s/*.root  | awk '{print $1}' > listTemp_%s.txt", (inputFile).c_str(), outputFile.c_str());
   std::cout<<command1<<std::endl;
   std::cout<<"Scale Factor for this sample = "<<weight<<endl;
   system(command1);
@@ -193,6 +194,41 @@ int main (int argc, char** argv)
   weights_pu2 = generate_weights(pileupHisto2,1);
   pileupFile2->Close();
 
+
+  //---------------- Root Files for ID, ISO, Trigger, GSF correctiosn for ELE and MU both: Starts -------------
+  TFile* IDIsoEle = TFile::Open("egammaEffi.txt_SF2D.root","READ");
+  TH1F *hIDIsoEle = (TH1F*)IDIsoEle->Get("EGamma_SF2D");
+  int nXhIDIsoEle = hIDIsoEle->GetXaxis()->GetNbins(); 
+  int nYhIDIsoEle = hIDIsoEle->GetYaxis()->GetNbins(); 
+
+  TFile* GSFCorrEle = TFile::Open("egammaEffi.txt_SF2D_GSF_tracking.root","READ");
+  TH1F *hGSFCorrEle = (TH1F*)GSFCorrEle->Get("EGamma_SF2D");
+  int nXhGSFCorrEle = hGSFCorrEle->GetXaxis()->GetNbins(); 
+  int nYhGSFCorrEle = hGSFCorrEle->GetYaxis()->GetNbins(); 
+
+  TFile* IDMu = TFile::Open("MuonID_Z_RunBCD_prompt80X_7p65.root","READ");
+  TH1F *hIDMu = (TH1F*)IDMu->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio");
+  int nXhIDMu = hIDMu->GetXaxis()->GetNbins(); 
+  int nYhIDMu = hIDMu->GetYaxis()->GetNbins(); 
+
+  TFile* IsoMu = TFile::Open("MuonIso_Z_RunBCD_prompt80X_7p65.root","READ");
+  TH1F *hIsoMu = (TH1F*)IsoMu->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio");
+  int nXhIsoMu = hIsoMu->GetXaxis()->GetNbins(); 
+  int nYhIsoMu = hIsoMu->GetYaxis()->GetNbins(); 
+
+  TFile* TriggerEffMu = TFile::Open("SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root","READ");
+  TH1F *hTriggerEffMu1 = (TH1F*)TriggerEffMu->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run273158_to_274093/efficienciesDATA/abseta_pt_DATA");
+  TH1F *hTriggerEffMu2 = (TH1F*)TriggerEffMu->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run274094_to_276097/efficienciesDATA/abseta_pt_DATA");
+  double MuonSF1, MuonSF2;
+  double hTriggerEffMu1_Lumi = 0.5;	// Need to put actual val
+  double hTriggerEffMu2_Lumi = 2.5;	// Need to put actual val
+  int nXhTriggerEffMu1 = hTriggerEffMu1->GetXaxis()->GetNbins(); 
+  int nYhTriggerEffMu1 = hTriggerEffMu1->GetYaxis()->GetNbins(); 
+  int nXhTriggerEffMu2 = hTriggerEffMu2->GetXaxis()->GetNbins(); 
+  int nYhTriggerEffMu2 = hTriggerEffMu2->GetYaxis()->GetNbins(); 
+//IDIsoEle->Close();	GSFCorrEle->Close();	 IDMu->Close();		IsoMu->Close();		TriggerEffMu->Close();
+
+  //---------------- Root Files for ID, ISO, Trigger, GSF correctiosn for ELE and MU both: ENDS -------------
 
   //---------output tree----------------
   TFile* outROOT = TFile::Open((outputFile+(".root")).c_str(),"recreate");
@@ -374,7 +410,7 @@ int main (int argc, char** argv)
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug mu: "<<i<<std::endl;
         if (ReducedTree->MuonsPt[i]<25) continue;
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug mu: "<<i<<std::endl;
-        if (fabs(ReducedTree->MuonsEta[i])>=2.1) continue;
+        if (fabs(ReducedTree->MuonsEta[i])>=2.4) continue;
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug mu: "<<i<<std::endl;
 	MU.SetPtEtaPhiE(ReducedTree->MuonsPt[i],ReducedTree->MuonsEta[i],ReducedTree->MuonsPhi[i],ReducedTree->MuonsE[i]);
 	tightMuon.push_back(MU);
@@ -397,40 +433,23 @@ int main (int argc, char** argv)
     //trigger SF for muon (from B2G-15-005, these are for the HLT_IsoMu20 trigger,
     //see https://indico.cern.ch/event/462268/contribution/9/attachments/1188638/1724574/2015.11.17_MuonPOG_SingleMuTrigEff_SF_KPLee_v2.pdf
     if (strcmp(leptonName.c_str(),"mu")==0 && isMC==1) {
-      if (WWTree->run >= 257820) {
-	if ( fabs(WWTree->l_eta) < 0.9) {
-	  if      ( WWTree->l_pt<50)  WWTree->trig_eff_Weight = 1.0000;
-	  else if ( WWTree->l_pt<60)  WWTree->trig_eff_Weight = 0.9981;
-	  else                        WWTree->trig_eff_Weight = 0.9908;
-	}	
-	else if ( fabs(WWTree->l_eta) >= 0.9 && fabs(WWTree->l_eta)<1.2) {
-	  if      ( WWTree->l_pt<50)  WWTree->trig_eff_Weight = 0.9992;
-	  else if ( WWTree->l_pt<60)  WWTree->trig_eff_Weight = 1.0028;
-	  else                        WWTree->trig_eff_Weight = 0.9847;
-	}	
-	else if ( fabs(WWTree->l_eta) >= 1.2 && fabs(WWTree->l_eta)<2.1) {
-	  if      ( WWTree->l_pt<50)  WWTree->trig_eff_Weight = 0.9951;
-	  else if ( WWTree->l_pt<60)  WWTree->trig_eff_Weight = 0.9940;
-	  else                        WWTree->trig_eff_Weight = 0.9931;
+    	for (int i=1;i<=nXhTriggerEffMu1;i++) { 
+		for (int j=1;j<=nYhTriggerEffMu1;j++) { 
+		if ((WWTree->l_pt > hTriggerEffMu1->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hTriggerEffMu1->GetYaxis()->GetBinUpEdge(j)))
+		if ((WWTree->l_eta > hTriggerEffMu1->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hTriggerEffMu1->GetXaxis()->GetBinUpEdge(i)))
+		MuonSF1 = hTriggerEffMu1->GetBinContent(i,j);
+		}
 	}
-      }
-      else {
-	if ( fabs(WWTree->l_eta) < 0.9) {
-	  if      ( WWTree->l_pt<50)  WWTree->trig_eff_Weight = 0.9770;
-	  else if ( WWTree->l_pt<60)  WWTree->trig_eff_Weight = 0.9848;
-	  else                        WWTree->trig_eff_Weight = 0.9763;
-	}	
-	else if ( fabs(WWTree->l_eta) >= 0.9 && fabs(WWTree->l_eta)<1.2) {
-	  if      ( WWTree->l_pt<50)  WWTree->trig_eff_Weight = 0.9810;
-	  else if ( WWTree->l_pt<60)  WWTree->trig_eff_Weight = 0.9890;
-	  else                        WWTree->trig_eff_Weight = 0.9807;
-	}	
-	else if ( fabs(WWTree->l_eta) >= 1.2 && fabs(WWTree->l_eta)<2.1) {
-	  if      ( WWTree->l_pt<50)  WWTree->trig_eff_Weight = 0.9767;
-	  else if ( WWTree->l_pt<60)  WWTree->trig_eff_Weight = 0.9788;
-	  else                        WWTree->trig_eff_Weight = 0.9808;
+    	for (int i=1;i<=nXhTriggerEffMu2;i++) { 
+		for (int j=1;j<=nYhTriggerEffMu2;j++) { 
+		if ((WWTree->l_pt > hTriggerEffMu2->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hTriggerEffMu2->GetYaxis()->GetBinUpEdge(j)))
+		if ((WWTree->l_eta > hTriggerEffMu2->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hTriggerEffMu2->GetXaxis()->GetBinUpEdge(i)))
+		MuonSF2 = hTriggerEffMu2->GetBinContent(i,j);
+		}
 	}
-      }
+
+	WWTree->trig_eff_Weight = (MuonSF1 * hTriggerEffMu1_Lumi + MuonSF2 * hTriggerEffMu2_Lumi )/ (hTriggerEffMu1_Lumi + hTriggerEffMu2_Lumi);
+
     }
     
     //trigger SF for electron (from B2G-15-005)
@@ -457,42 +476,41 @@ int main (int argc, char** argv)
       }
     }
     
-    //ID efficiency SF for electrons (from B2G-15-005)
+    //ID & GSF efficiency SF for electrons (https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun2#Electron_efficiencies_and_scale)
     if (strcmp(leptonName.c_str(),"el")==0 && isMC==1) {
-      if ( fabs(WWTree->l_eta) < 1.4) {
-	if      ( WWTree->l_pt<50)  WWTree->id_eff_Weight = 0.975;
-	else if ( WWTree->l_pt<100) WWTree->id_eff_Weight = 0.976;
-	else if ( WWTree->l_pt<150) WWTree->id_eff_Weight = 0.977;
-	else                        WWTree->id_eff_Weight = 1.008;
-      }	
-      else if (fabs(WWTree->l_eta) >= 1.4 && fabs(WWTree->l_eta)<1.6 ) {
-	if      ( WWTree->l_pt<50)  WWTree->id_eff_Weight = 0.968;
-	else if ( WWTree->l_pt<100) WWTree->id_eff_Weight = 0.996;
-	else if ( WWTree->l_pt<150) WWTree->id_eff_Weight = 0.983;
-	else                        WWTree->id_eff_Weight = 1.045;
-      }
-      else if (fabs(WWTree->l_eta) >= 1.6 && fabs(WWTree->l_eta)<2.1 ) {
-	if      ( WWTree->l_pt<50)  WWTree->id_eff_Weight = 0.987;
-	else if ( WWTree->l_pt<100) WWTree->id_eff_Weight = 0.981;
-	else if ( WWTree->l_pt<150) WWTree->id_eff_Weight = 0.996;
-	else                        WWTree->id_eff_Weight = 0.977;
-      }
+    	for (int i=1;i<=nXhIDIsoEle;i++) { 
+		for (int j=1;j<=nYhIDIsoEle;j++) { 
+		if ((WWTree->l_pt > hIDIsoEle->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hIDIsoEle->GetYaxis()->GetBinUpEdge(j)))
+		if ((WWTree->l_eta > hIDIsoEle->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hIDIsoEle->GetXaxis()->GetBinUpEdge(i)))
+		WWTree->id_eff_Weight = hIDIsoEle->GetBinContent(i,j);
+		}
+	}
+    	for (int i=1;i<=nXhGSFCorrEle;i++) { 
+		for (int j=1;j<=nYhGSFCorrEle;j++) { 
+		if ((WWTree->l_pt > hGSFCorrEle->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hGSFCorrEle->GetYaxis()->GetBinUpEdge(j)))
+		if ((WWTree->l_eta > hGSFCorrEle->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hGSFCorrEle->GetXaxis()->GetBinUpEdge(i)))
+		WWTree->id_eff_Weight = WWTree->id_eff_Weight*hGSFCorrEle->GetBinContent(i,j);
+		}
+	}
+
     }
     
-    //ID efficiency SF for muons (from B2G-15-005)
+    //ID & ISO efficiency SF for muons (https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults)
     if (strcmp(leptonName.c_str(),"mu")==0 && isMC==1) {
-      if ( fabs(WWTree->l_eta) < 1.2) {
-	if      ( WWTree->l_pt<50)  WWTree->id_eff_Weight = 0.994;
-	else if ( WWTree->l_pt<100) WWTree->id_eff_Weight = 0.992;
-	else if ( WWTree->l_pt<150) WWTree->id_eff_Weight = 0.985;
-	else                        WWTree->id_eff_Weight = 0.984;
-      }	
-      else if (fabs(WWTree->l_eta) >= 1.2 && fabs(WWTree->l_eta)<2.1 ) {
-	if      ( WWTree->l_pt<50)  WWTree->id_eff_Weight = 0.995;
-	else if ( WWTree->l_pt<100) WWTree->id_eff_Weight = 0.993;
-	else if ( WWTree->l_pt<150) WWTree->id_eff_Weight = 0.986;
-	else                        WWTree->id_eff_Weight = 0.960;
-      }
+    	for (int i=1;i<=nXhIDMu;i++) { 
+		for (int j=1;j<=nYhIDMu;j++) { 
+		if ((WWTree->l_pt > hIDMu->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hIDMu->GetYaxis()->GetBinUpEdge(j)))
+		if ((WWTree->l_eta > hIDMu->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hIDMu->GetXaxis()->GetBinUpEdge(i)))
+		WWTree->id_eff_Weight = hIDMu->GetBinContent(i,j);
+		}
+	}
+    	for (int i=1;i<=nXhIsoMu;i++) { 
+		for (int j=1;j<=nYhIsoMu;j++) { 
+		if ((WWTree->l_pt > hIsoMu->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hIsoMu->GetYaxis()->GetBinUpEdge(j)))
+		if ((WWTree->l_eta > hIsoMu->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hIsoMu->GetXaxis()->GetBinUpEdge(i)))
+		WWTree->id_eff_Weight = WWTree->id_eff_Weight * hIsoMu->GetBinContent(i,j);
+		}
+	}
     }
     
     //VETO ADDITIONAL LEPTONS
@@ -533,7 +551,7 @@ int main (int argc, char** argv)
     //////////////THE MET
     
     //preselection on met
-    if (ReducedTree->METPt < 30) continue;
+    //if (ReducedTree->METPt < 30) continue;
     cutEff[3]++;
     // if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;
     
@@ -552,7 +570,9 @@ int main (int argc, char** argv)
     W_Met_jes_up.SetPxPyPzE(ReducedTree->METPtUp * TMath::Cos(ReducedTree->METPhiUp), ReducedTree->METPtUp * TMath::Sin(ReducedTree->METPhiUp), 0., sqrt(ReducedTree->METPtUp*ReducedTree->METPtUp));
     W_Met_jes_dn.SetPxPyPzE(ReducedTree->METPtDown * TMath::Cos(ReducedTree->METPhiDown), ReducedTree->METPtDown * TMath::Sin(ReducedTree->METPhiDown), 0., sqrt(ReducedTree->METPtDown*ReducedTree->METPtDown));
     
-    // if(LEP.Pt()<=0 || W_Met.Pt() <= 0 ){ std::cerr<<" Negative Lepton - Neutrino Pt "<<std::endl; continue ; }
+    if(LEP.Pt()<=0 || W_Met.Pt() <= 0 ){ std::cerr<<" Negative Lepton - Neutrino Pt "<<std::endl; continue ;  
+    cutEff[4]++;
+    }
     // if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;
     
     // type0 calculation of neutrino pZ
@@ -682,9 +702,9 @@ int main (int argc, char** argv)
     for (unsigned int i=0; i<ReducedTree->JetsNum; i++) //loop on AK4 jet
     {
       bool isCleanedJet = true;
-      if (ReducedTree->Jets_PtCorr[i]<=30 || ReducedTree->JetsPt[i]<=20 || fabs(ReducedTree->JetsEta[i])>=5.0)  continue;
+      if (ReducedTree->Jets_PtCorr[i]<=30 || ReducedTree->JetsPt[i]<=20 || fabs(ReducedTree->JetsEta[i])>=2.4)  continue;
       if (ReducedTree->Jets_isLooseJetId[i]==false) continue;
-      if (ReducedTree->Jets_bDiscriminatorICSV[i]>0.890) continue;
+      if (ReducedTree->Jets_bDiscriminatorICSV[i]>0.800) continue;
       
       //CLEANING FROM LEPTONS
       for (unsigned int j=0; j<tightEle.size(); j++) {
@@ -740,7 +760,7 @@ int main (int argc, char** argv)
 	cutEff[6]++;
 	}
 
-    if (nGoodAK4VBFjets > 0 && ReducedTree->Jets_bDiscriminatorICSV[nVBF1]> 0.97 && ReducedTree->Jets_bDiscriminatorICSV[nVBF2]> 0.97){
+    if (nGoodAK4VBFjets > 0 && ReducedTree->Jets_bDiscriminatorICSV[nVBF1] < 0.935 && ReducedTree->Jets_bDiscriminatorICSV[nVBF2]< 0.935){
 	WWTree->isVBFJet_NoB=1;
     	cutEff[7]++;
 	}
@@ -778,8 +798,8 @@ int main (int argc, char** argv)
         {
     if(indexGoodAK4Jets.at(i) == nVBF1 || indexGoodAK4Jets.at(j) == nVBF2 ) continue;
     if(indexGoodAK4Jets.at(j) == nVBF1 || indexGoodAK4Jets.at(i) == nVBF2 ) continue;
-      if (fabs(ReducedTree->JetsEta[indexGoodAK4Jets.at(i)])>=3.0)  continue;
-      if (fabs(ReducedTree->JetsEta[indexGoodAK4Jets.at(j)])>=3.0)  continue;
+//      if (fabs(ReducedTree->JetsEta[indexGoodAK4Jets.at(i)])>=2.0)  continue;
+//      if (fabs(ReducedTree->JetsEta[indexGoodAK4Jets.at(j)])>=3.0)  continue;
     //coutWjets++;
             Wjet1_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(i)],ReducedTree->JetsEta[indexGoodAK4Jets.at(i)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(i)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(i)]);
             Wjet2_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(j)],ReducedTree->JetsEta[indexGoodAK4Jets.at(j)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(j)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(j)]);
@@ -787,12 +807,12 @@ int main (int argc, char** argv)
             //cout<<"Found Before Check!!!!"<<endl;
 
 
-            if (DeltaMassWindow < abs(TOT_Wjet.M() - 80.)) continue;
+            if (DeltaMassWindow < abs(TOT_Wjet.M() - 35.)) continue;
             //cout<<"(Wjet1_AK4+Wjet2_AK4).M()-80. = "<<(Wjet1_AK4+Wjet2_AK4).M()<<endl;
 
 //          cout<< "====> " << Wjet1_AK4.Mag() << "\t" << Wjet2_AK4.Mag() << "\t" << TOT_Wjet.Mag() <<endl;
 
-            DeltaMassWindow = abs(TOT_Wjet.M()-80.); //take the jet pair with largest DeltaEta
+            DeltaMassWindow = abs(TOT_Wjet.M()-35.); //take the jet pair with largest DeltaEta
             nWjets1 = indexGoodAK4Jets.at(i); //save position of the 1st vbf jet
             nWjets2 = indexGoodAK4Jets.at(j); //save position of the 2nd vbf jet
             nGoodAK4Wjets++;
@@ -844,6 +864,7 @@ int main (int argc, char** argv)
     WWTree->mass_lvjj_run2_AK4  = (LEP + NU1 + Wjets1 + Wjets2).M();
     
    } 
+
 /*     
     //////////////////FOUR-BODY INVARIANT MASS
     WWTree->mass_lvj_type0 = (LEP + NU0 + JET).M();
@@ -987,7 +1008,8 @@ int main (int argc, char** argv)
 	WWTree->gen_top2_pt = ReducedTree->GenTopPt[1];
       }
     
-    WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
+//    WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
+    WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->id_eff_Weight*WWTree->trig_eff_Weight;
     WWTree->totalEventWeight_2 = WWTree->genWeight*WWTree->eff_and_pu_Weight_2*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
     WWTree->totalEventWeight_3 = WWTree->genWeight*WWTree->eff_and_pu_Weight_3*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
 
