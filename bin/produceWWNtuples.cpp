@@ -102,6 +102,7 @@ int main (int argc, char** argv)
     std::cout<<"Error: wrong lepton category"<<std::endl;
     return(-1);
   }
+ bool  verbose = 0;
   
   // std::string jsonFileName="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
   std::map<int, std::vector<std::pair<int, int> > > jsonMap;
@@ -145,8 +146,8 @@ int main (int argc, char** argv)
 
 
   char command1[3000];
-  sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
-  //sprintf(command1, "ls /tmp/rasharma/ueos/user/r/rasharma/aQGC_Studies/FirstStepOutput/%s/*.root  | awk '{print $1}' > listTemp_%s.txt", (inputFile).c_str(), outputFile.c_str());
+  //sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
+  sprintf(command1, "ls /tmp/rasharma/ueos/user/r/rasharma/aQGC_Studies/FirstStepOutput/%s/*.root  | awk '{print $1}' > listTemp_%s.txt", (inputFile).c_str(), outputFile.c_str());
   std::cout<<command1<<std::endl;
   std::cout<<"Scale Factor for this sample = "<<weight<<endl;
   system(command1);
@@ -196,36 +197,37 @@ int main (int argc, char** argv)
 
 
   //---------------- Root Files for ID, ISO, Trigger, GSF correctiosn for ELE and MU both: Starts -------------
-  TFile* IDIsoEle = TFile::Open("egammaEffi.txt_SF2D.root","READ");
-  TH1F *hIDIsoEle = (TH1F*)IDIsoEle->Get("EGamma_SF2D");
-  int nXhIDIsoEle = hIDIsoEle->GetXaxis()->GetNbins(); 
-  int nYhIDIsoEle = hIDIsoEle->GetYaxis()->GetNbins(); 
+  TFile* IDIsoEleA = TFile::Open("egammaEffi.txt_SF2D_ID_ISO_RunB_0pt5fb.root","READ");	// First Root file for ID&ISO for ele
+  TH1F *hIDIsoEleA = (TH1F*)IDIsoEleA->Get("EGamma_SF2D");
+  double IDIsoEleA_Lumi = 0.5;	// Lumi corresponding to above file
+
+  TFile* IDIsoEleB = TFile::Open("egammaEffi.txt_SF2D_ID_ISO_RunB_5pt0fb.root","READ"); // Second Root file for ID&ISO for ele
+  TH1F *hIDIsoEleB = (TH1F*)IDIsoEleB->Get("EGamma_SF2D");
+  double IDIsoEleB_Lumi = 5.3;	// Lumi corresponding to above file
+
+	// Variables to define: 
+  double TempPt, TempEta;
+  int binPt, binEta;
+  double EleIDIsoScaleA, EleIDIsoScaleB;
 
   TFile* GSFCorrEle = TFile::Open("egammaEffi.txt_SF2D_GSF_tracking.root","READ");
   TH1F *hGSFCorrEle = (TH1F*)GSFCorrEle->Get("EGamma_SF2D");
-  int nXhGSFCorrEle = hGSFCorrEle->GetXaxis()->GetNbins(); 
-  int nYhGSFCorrEle = hGSFCorrEle->GetYaxis()->GetNbins(); 
+
+  TFile* TriggerEffEle = TFile::Open("SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root","READ");
+  TH1F *hTriggerEffEle = (TH1F*)TriggerEffEle->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run273158_to_274093/efficienciesDATA/abseta_pt_DATA");
 
   TFile* IDMu = TFile::Open("MuonID_Z_RunBCD_prompt80X_7p65.root","READ");
   TH1F *hIDMu = (TH1F*)IDMu->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio");
-  int nXhIDMu = hIDMu->GetXaxis()->GetNbins(); 
-  int nYhIDMu = hIDMu->GetYaxis()->GetNbins(); 
 
   TFile* IsoMu = TFile::Open("MuonIso_Z_RunBCD_prompt80X_7p65.root","READ");
   TH1F *hIsoMu = (TH1F*)IsoMu->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/abseta_pt_ratio");
-  int nXhIsoMu = hIsoMu->GetXaxis()->GetNbins(); 
-  int nYhIsoMu = hIsoMu->GetYaxis()->GetNbins(); 
 
   TFile* TriggerEffMu = TFile::Open("SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root","READ");
   TH1F *hTriggerEffMu1 = (TH1F*)TriggerEffMu->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run273158_to_274093/efficienciesDATA/abseta_pt_DATA");
   TH1F *hTriggerEffMu2 = (TH1F*)TriggerEffMu->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run274094_to_276097/efficienciesDATA/abseta_pt_DATA");
   double MuonSF1, MuonSF2;
-  double hTriggerEffMu1_Lumi = 0.5;	// Need to put actual val
-  double hTriggerEffMu2_Lumi = 2.5;	// Need to put actual val
-  int nXhTriggerEffMu1 = hTriggerEffMu1->GetXaxis()->GetNbins(); 
-  int nYhTriggerEffMu1 = hTriggerEffMu1->GetYaxis()->GetNbins(); 
-  int nXhTriggerEffMu2 = hTriggerEffMu2->GetXaxis()->GetNbins(); 
-  int nYhTriggerEffMu2 = hTriggerEffMu2->GetYaxis()->GetNbins(); 
+  double hTriggerEffMu1_Lumi = 0.622;	// Need to put actual val
+  double hTriggerEffMu2_Lumi = 4.378;	// Need to put actual val
 //IDIsoEle->Close();	GSFCorrEle->Close();	 IDMu->Close();		IsoMu->Close();		TriggerEffMu->Close();
 
   //---------------- Root Files for ID, ISO, Trigger, GSF correctiosn for ELE and MU both: ENDS -------------
@@ -261,6 +263,7 @@ int main (int argc, char** argv)
   
   //---------start loop on events------------
   std::cout << "---------start loop on events------------" << std::endl;
+  //for (Long64_t jentry=0; jentry<10000;jentry++,jentry2++)
   for (Long64_t jentry=0; jentry<ReducedTree->fChain->GetEntries();jentry++,jentry2++)
   {
     //for (Long64_t jentry=531000; jentry<532000;jentry++,jentry2++) {
@@ -433,84 +436,125 @@ int main (int argc, char** argv)
     //trigger SF for muon (from B2G-15-005, these are for the HLT_IsoMu20 trigger,
     //see https://indico.cern.ch/event/462268/contribution/9/attachments/1188638/1724574/2015.11.17_MuonPOG_SingleMuTrigEff_SF_KPLee_v2.pdf
     if (strcmp(leptonName.c_str(),"mu")==0 && isMC==1) {
-    	for (int i=1;i<=nXhTriggerEffMu1;i++) { 
-		for (int j=1;j<=nYhTriggerEffMu1;j++) { 
-		if ((WWTree->l_pt > hTriggerEffMu1->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hTriggerEffMu1->GetYaxis()->GetBinUpEdge(j)))
-		if ((WWTree->l_eta > hTriggerEffMu1->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hTriggerEffMu1->GetXaxis()->GetBinUpEdge(i)))
-		MuonSF1 = hTriggerEffMu1->GetBinContent(i,j);
-		}
-	}
-    	for (int i=1;i<=nXhTriggerEffMu2;i++) { 
-		for (int j=1;j<=nYhTriggerEffMu2;j++) { 
-		if ((WWTree->l_pt > hTriggerEffMu2->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hTriggerEffMu2->GetYaxis()->GetBinUpEdge(j)))
-		if ((WWTree->l_eta > hTriggerEffMu2->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hTriggerEffMu2->GetXaxis()->GetBinUpEdge(i)))
-		MuonSF2 = hTriggerEffMu2->GetBinContent(i,j);
-		}
-	}
+    	//----------- Start Applying Trigger SF's for muons	--------------------
+	TempPt = WWTree->l_pt;
+	TempEta= fabs(WWTree->l_eta);
+	if (TempPt > hTriggerEffMu1->GetYaxis()->GetXmax())		// Check if pt is not ouside upper limit; if so then to assign same SF as the last bin to high pt resacle tempPt to less then maximum range of pt defined in histo.
+		TempPt = hTriggerEffMu1->GetYaxis()->GetXmax() - 1.0;	
+	if (TempPt < hTriggerEffMu1->GetYaxis()->GetXmin())		// Check if pt is not ouside lower limit; if so then to assign same SF as the first bin to low pt resacle tempPt to greater then minimum range of pt defined in histo.
+		TempPt = hTriggerEffMu1->GetYaxis()->GetXmin() + 1.0;
+	binEta = hTriggerEffMu1->GetXaxis()->FindFixBin(TempEta);	// Get Eta bin 
+	binPt  = hTriggerEffMu1->GetYaxis()->FindFixBin(TempPt);	// Get Pt Bin
+
+	MuonSF1 = hTriggerEffMu1->GetBinContent( binEta, binPt );	// Get Scale factor corresponding to the pt and eta.
+	if (verbose){
+	cout<<"A: WWTree->l_pt = "<<WWTree->l_pt<<"\tTempPt = "<<TempPt<<"\tTempEta = "<<TempEta<<"\tMuonSF1 = "<<MuonSF1<<"\tMuonSF2 = "<<MuonSF2<<"\tWWTree->trig_eff_Weight = "<<WWTree->trig_eff_Weight<<endl;
+}
+	TempPt = WWTree->l_pt;
+	TempEta= fabs(WWTree->l_eta);
+	if (TempPt > hTriggerEffMu2->GetYaxis()->GetXmax())		// Check if pt is not ouside upper limit; if so then to assign same SF as the last bin to high pt resacle tempPt to less then maximum range of pt defined in histo.
+		TempPt = hTriggerEffMu2->GetYaxis()->GetXmax() - 1.0;	
+	if (TempPt < hTriggerEffMu2->GetYaxis()->GetXmin())		// Check if pt is not ouside lower limit; if so then to assign same SF as the first bin to low pt resacle tempPt to greater then minimum range of pt defined in histo.
+		TempPt = hTriggerEffMu2->GetYaxis()->GetXmin() + 1.0;
+	binEta = hTriggerEffMu2->GetXaxis()->FindFixBin(TempEta);	// Get Eta bin 
+	binPt  = hTriggerEffMu2->GetYaxis()->FindFixBin(TempPt);	// Get Pt Bin
+
+	MuonSF2 = hTriggerEffMu2->GetBinContent( binEta, binPt );	// Get Scale factor corresponding to the pt and eta.
 
 	WWTree->trig_eff_Weight = (MuonSF1 * hTriggerEffMu1_Lumi + MuonSF2 * hTriggerEffMu2_Lumi )/ (hTriggerEffMu1_Lumi + hTriggerEffMu2_Lumi);
 
+	if (verbose)
+	cout<<"B: TempPt = "<<TempPt<<"\tTempEta = "<<TempEta<<"\tMuonSF1 = "<<MuonSF1<<"\tMuonSF2 = "<<MuonSF2<<"\tWWTree->trig_eff_Weight = "<<WWTree->trig_eff_Weight<<endl;
     }
     
     //trigger SF for electron (from B2G-15-005)
     if (strcmp(leptonName.c_str(),"el")==0 && isMC==1) {
-      if ( fabs(WWTree->l_eta) < 0.4) {
-	if      ( WWTree->l_pt<50)   WWTree->trig_eff_Weight = 0.980;
-	else if ( WWTree->l_pt<200)  WWTree->trig_eff_Weight = 0.998;
-	else                         WWTree->trig_eff_Weight = 1.011;
-      }	
-      else if ( fabs(WWTree->l_eta) >= 0.4 && fabs(WWTree->l_eta)<1.4 ) {
-	if      ( WWTree->l_pt<50)   WWTree->trig_eff_Weight = 1.005;
-	else if ( WWTree->l_pt<200)  WWTree->trig_eff_Weight = 1.012;
-	else                         WWTree->trig_eff_Weight = 1.012;
-      }
-      else if ( fabs(WWTree->l_eta) >= 1.4 && fabs(WWTree->l_eta)<1.6 ) {
-	if      ( WWTree->l_pt<50)   WWTree->trig_eff_Weight = 0.998;
-	else if ( WWTree->l_pt<200)  WWTree->trig_eff_Weight = 1.004;
-	else                         WWTree->trig_eff_Weight = 0.947;
-      }
-      else {
-	if      ( WWTree->l_pt<50)   WWTree->trig_eff_Weight = 0.958;
-	else if ( WWTree->l_pt<200)  WWTree->trig_eff_Weight = 0.944;
-	else                         WWTree->trig_eff_Weight = 0.950;
-      }
+    	//----------- Start Applying Trigger SF's for Electrons	--------------------
+	TempPt = WWTree->l_pt;
+	TempEta= WWTree->l_eta;
+	if (TempPt > hTriggerEffEle->GetYaxis()->GetXmax())		// Check if pt is not ouside upper limit; if so then to assign same SF as the last bin to high pt resacle tempPt to less then maximum range of pt defined in histo.
+		TempPt = hTriggerEffEle->GetYaxis()->GetXmax() - 1.0;	
+	if (TempPt < hTriggerEffEle->GetYaxis()->GetXmin())		// Check if pt is not ouside lower limit; if so then to assign same SF as the first bin to low pt resacle tempPt to greater then minimum range of pt defined in histo.
+		TempPt = hTriggerEffEle->GetYaxis()->GetXmin() + 1.0;
+	binEta = hTriggerEffEle->GetXaxis()->FindFixBin(TempEta);	// Get Eta bin 
+	binPt  = hTriggerEffEle->GetYaxis()->FindFixBin(TempPt);	// Get Pt Bin
+
+	WWTree->trig_eff_Weight = hTriggerEffEle->GetBinContent( binEta, binPt );	// Get Scale factor corresponding to the pt and eta.
+	if (verbose)
+	cout<<"TempPt = "<<TempPt<<"\tTempEta = "<<TempEta<<"\tWWTree->trig_eff_Weight = "<<WWTree->trig_eff_Weight<<endl;
     }
     
     //ID & GSF efficiency SF for electrons (https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun2#Electron_efficiencies_and_scale)
     if (strcmp(leptonName.c_str(),"el")==0 && isMC==1) {
-    	for (int i=1;i<=nXhIDIsoEle;i++) { 
-		for (int j=1;j<=nYhIDIsoEle;j++) { 
-		if ((WWTree->l_pt > hIDIsoEle->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hIDIsoEle->GetYaxis()->GetBinUpEdge(j)))
-		if ((WWTree->l_eta > hIDIsoEle->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hIDIsoEle->GetXaxis()->GetBinUpEdge(i)))
-		WWTree->id_eff_Weight = hIDIsoEle->GetBinContent(i,j);
-		}
-	}
-    	for (int i=1;i<=nXhGSFCorrEle;i++) { 
-		for (int j=1;j<=nYhGSFCorrEle;j++) { 
-		if ((WWTree->l_pt > hGSFCorrEle->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hGSFCorrEle->GetYaxis()->GetBinUpEdge(j)))
-		if ((WWTree->l_eta > hGSFCorrEle->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hGSFCorrEle->GetXaxis()->GetBinUpEdge(i)))
-		WWTree->id_eff_Weight = WWTree->id_eff_Weight*hGSFCorrEle->GetBinContent(i,j);
-		}
-	}
+    	//----------- Start Applying ID, ISO SF's for electrons	--------------------
+	TempPt = WWTree->l_pt;
+	TempEta= WWTree->l_eta;
+	if (TempPt > hIDIsoEleA->GetYaxis()->GetXmax())		// Check if pt is not ouside upper limit; if so then to assign same SF as the last bin to high pt resacle tempPt to less then maximum range of pt defined in histo.
+		TempPt = hIDIsoEleA->GetYaxis()->GetXmax() - 1.0;	
+	if (TempPt < hIDIsoEleA->GetYaxis()->GetXmin())		// Check if pt is not ouside lower limit; if so then to assign same SF as the first bin to low pt resacle tempPt to greater then minimum range of pt defined in histo.
+		TempPt = hIDIsoEleA->GetYaxis()->GetXmin() + 1.0;
+	binEta = hIDIsoEleA->GetXaxis()->FindFixBin(TempEta);	// Get Eta bin 
+	binPt  = hIDIsoEleA->GetYaxis()->FindFixBin(TempPt);	// Get Pt Bin
+
+	EleIDIsoScaleA = hIDIsoEleA->GetBinContent( binEta, binPt );	// Get Scale factor corresponding to the pt and eta.
+
+	// Reset TempPt & TempEta to the pt of eta and pt of selected electron
+	TempPt = WWTree->l_pt;
+	TempEta= WWTree->l_eta;
+	if (TempPt > hIDIsoEleB->GetYaxis()->GetXmax())
+		TempPt = hIDIsoEleB->GetYaxis()->GetXmax() - 1.0;
+	if (TempPt < hIDIsoEleB->GetYaxis()->GetXmin())
+		TempPt = hIDIsoEleB->GetYaxis()->GetXmax() + 1.0;
+	binEta = hIDIsoEleB->GetXaxis()->FindFixBin(TempEta);
+	binPt  = hIDIsoEleB->GetYaxis()->FindFixBin(TempPt);
+
+	EleIDIsoScaleB = hIDIsoEleB->GetBinContent( binEta, binPt );
+
+	WWTree->id_eff_Weight = (EleIDIsoScaleA * IDIsoEleA_Lumi + EleIDIsoScaleB * IDIsoEleB_Lumi) / (IDIsoEleA_Lumi + IDIsoEleB_Lumi);
+	//
+    	//----------- END: Applying ID, ISO SF's for electrons	--------------------
+		
+    	//----------- Start Applying GSF/RECO SF's for electrons	--------------------
+	// Reset TempPt & TempEta to the pt of eta and pt of selected electron
+	TempPt = WWTree->l_pt;
+	TempEta= WWTree->l_eta;
+	if (TempPt > hGSFCorrEle->GetYaxis()->GetXmax())
+		TempPt = hGSFCorrEle->GetYaxis()->GetXmax() - 1.0;
+	if (TempPt < hGSFCorrEle->GetYaxis()->GetXmin())
+		TempPt = hGSFCorrEle->GetYaxis()->GetXmax() + 1.0;
+	binEta = hGSFCorrEle->GetXaxis()->FindFixBin(TempEta);
+	binPt  = hGSFCorrEle->GetYaxis()->FindFixBin(TempPt);
+
+	WWTree->id_eff_Weight = WWTree->id_eff_Weight*hGSFCorrEle->GetBinContent(binEta, binPt);
+    	//----------- END: Applying GSF/RECO SF's for electrons	--------------------
 
     }
     
     //ID & ISO efficiency SF for muons (https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults)
     if (strcmp(leptonName.c_str(),"mu")==0 && isMC==1) {
-    	for (int i=1;i<=nXhIDMu;i++) { 
-		for (int j=1;j<=nYhIDMu;j++) { 
-		if ((WWTree->l_pt > hIDMu->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hIDMu->GetYaxis()->GetBinUpEdge(j)))
-		if ((WWTree->l_eta > hIDMu->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hIDMu->GetXaxis()->GetBinUpEdge(i)))
-		WWTree->id_eff_Weight = hIDMu->GetBinContent(i,j);
-		}
-	}
-    	for (int i=1;i<=nXhIsoMu;i++) { 
-		for (int j=1;j<=nYhIsoMu;j++) { 
-		if ((WWTree->l_pt > hIsoMu->GetYaxis()->GetBinLowEdge(j)) && (WWTree->l_pt < hIsoMu->GetYaxis()->GetBinUpEdge(j)))
-		if ((WWTree->l_eta > hIsoMu->GetXaxis()->GetBinLowEdge(i)) && (WWTree->l_eta < hIsoMu->GetXaxis()->GetBinUpEdge(i)))
-		WWTree->id_eff_Weight = WWTree->id_eff_Weight * hIsoMu->GetBinContent(i,j);
-		}
-	}
+    	//----------- Start Applying ID SF's for Muons	--------------------
+	TempPt = WWTree->l_pt;
+	TempEta= fabs(WWTree->l_eta);
+	if (TempPt > hIDMu->GetYaxis()->GetXmax())		// Check if pt is not ouside upper limit; if so then to assign same SF as the last bin to high pt resacle tempPt to less then maximum range of pt defined in histo.
+		TempPt = hIDMu->GetYaxis()->GetXmax() - 1.0;	
+	if (TempPt < hIDMu->GetYaxis()->GetXmin())		// Check if pt is not ouside lower limit; if so then to assign same SF as the first bin to low pt resacle tempPt to greater then minimum range of pt defined in histo.
+		TempPt = hIDMu->GetYaxis()->GetXmin() + 1.0;
+	binEta = hIDMu->GetXaxis()->FindFixBin(TempEta);	// Get Eta bin 
+	binPt  = hIDMu->GetYaxis()->FindFixBin(TempPt);	// Get Pt Bin
+
+	WWTree->id_eff_Weight = hIDMu->GetBinContent(binEta, binPt);
+
+    	//----------- Start Applying ISO SF's for Muons	--------------------
+	TempPt = WWTree->l_pt;
+	TempEta= fabs(WWTree->l_eta);
+	if (TempPt > hIsoMu->GetYaxis()->GetXmax())		// Check if pt is not ouside upper limit; if so then to assign same SF as the last bin to high pt resacle tempPt to less then maximum range of pt defined in histo.
+		TempPt = hIsoMu->GetYaxis()->GetXmax() - 1.0;	
+	if (TempPt < hIsoMu->GetYaxis()->GetXmin())		// Check if pt is not ouside lower limit; if so then to assign same SF as the first bin to low pt resacle tempPt to greater then minimum range of pt defined in histo.
+		TempPt = hIsoMu->GetYaxis()->GetXmin() + 1.0;
+	binEta = hIsoMu->GetXaxis()->FindFixBin(TempEta);	// Get Eta bin 
+	binPt  = hIsoMu->GetYaxis()->FindFixBin(TempPt);	// Get Pt Bin
+
+	WWTree->id_eff_Weight = WWTree->id_eff_Weight * hIsoMu->GetBinContent(binEta, binPt);
     }
     
     //VETO ADDITIONAL LEPTONS
@@ -570,9 +614,8 @@ int main (int argc, char** argv)
     W_Met_jes_up.SetPxPyPzE(ReducedTree->METPtUp * TMath::Cos(ReducedTree->METPhiUp), ReducedTree->METPtUp * TMath::Sin(ReducedTree->METPhiUp), 0., sqrt(ReducedTree->METPtUp*ReducedTree->METPtUp));
     W_Met_jes_dn.SetPxPyPzE(ReducedTree->METPtDown * TMath::Cos(ReducedTree->METPhiDown), ReducedTree->METPtDown * TMath::Sin(ReducedTree->METPhiDown), 0., sqrt(ReducedTree->METPtDown*ReducedTree->METPtDown));
     
-    if(LEP.Pt()<=0 || W_Met.Pt() <= 0 ){ std::cerr<<" Negative Lepton - Neutrino Pt "<<std::endl; continue ;  
+    if(LEP.Pt()<=0 || W_Met.Pt() <= 0 ){ std::cerr<<" Negative Lepton - Neutrino Pt "<<std::endl; continue ;  }
     cutEff[4]++;
-    }
     // if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug: "<<count<<std::endl; count++;
     
     // type0 calculation of neutrino pZ
@@ -685,7 +728,7 @@ int main (int argc, char** argv)
     
     ///////////THE JET - AK4
     //WWTree->njets=0;
-    //WWTree->njets_unmerged=0;
+    //WWTree->nVBFPairs=0;
     //int hadWpos = -1;
     //int ttb_jet_position=-1; //position of AK8 jet in ttbar-topology
     // if (ReducedTree->AK8JetsNum < 1 ) continue; 
@@ -732,7 +775,7 @@ int main (int argc, char** argv)
     int nVBF1=-1, nVBF2=-1; //position of the two vbf jets
 
     int nGoodAK4VBFjets = 0;
-    WWTree->njets_unmerged=0;
+    WWTree->nVBFPairs=0;
 
     //================================ Selection of VBF jets: BEGIN =====================================
     for(int i=0; i<indexGoodAK4Jets.size()-1;i++)
@@ -750,7 +793,7 @@ int main (int argc, char** argv)
             nVBF2 = indexGoodAK4Jets.at(j); //save position of the 2nd vbf jet
 
     	nGoodAK4VBFjets++;
-	WWTree->njets_unmerged++;
+	WWTree->nVBFPairs++;
         }
     }
 
@@ -792,6 +835,7 @@ int main (int argc, char** argv)
     int nGoodAK4Wjets = 0;
     int nWjets1 = -1, nWjets2 = -1 ;
     double DeltaMassWindow = 80.;
+    #if 0
     for(int i=0; i<indexGoodAK4Jets.size()-1;i++)
     {
         for(int j=i+1; j<indexGoodAK4Jets.size();j++)
@@ -813,11 +857,30 @@ int main (int argc, char** argv)
 //          cout<< "====> " << Wjet1_AK4.Mag() << "\t" << Wjet2_AK4.Mag() << "\t" << TOT_Wjet.Mag() <<endl;
 
             DeltaMassWindow = abs(TOT_Wjet.M()-35.); //take the jet pair with largest DeltaEta
-            nWjets1 = indexGoodAK4Jets.at(i); //save position of the 1st vbf jet
-            nWjets2 = indexGoodAK4Jets.at(j); //save position of the 2nd vbf jet
+            nWjets1 = indexGoodAK4Jets.at(i); //save position of the 1st W-jet
+            nWjets2 = indexGoodAK4Jets.at(j); //save position of the 2nd W-jet
             nGoodAK4Wjets++;
         }
     }
+    #endif
+    for(int i=0; i<indexGoodAK4Jets.size();i++)
+    {
+	if(indexGoodAK4Jets.at(0) == nVBF1 || indexGoodAK4Jets.at(0) == nVBF2 ) continue;
+	nGoodAK4Wjets++;
+	if (nGoodAK4Wjets == 1)
+	{
+            Wjet1_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(i)],ReducedTree->JetsEta[indexGoodAK4Jets.at(i)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(i)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(i)]);
+            nWjets1 = indexGoodAK4Jets.at(i); //save position of the 1st Wjets
+            nGoodAK4Wjets++;
+	}
+	if (nGoodAK4Wjets == 2)
+	{
+            Wjet2_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(i)],ReducedTree->JetsEta[indexGoodAK4Jets.at(i)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(i)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(i)]);
+            nWjets2 = indexGoodAK4Jets.at(i); //save position of the 2nd W-jet
+            nGoodAK4Wjets++;
+	}
+    }
+
     if (nGoodAK4Wjets == 0){
     WWTree->isWJets = 1;
     cutEff[8]++;}
@@ -1009,7 +1072,8 @@ int main (int argc, char** argv)
       }
     
 //    WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
-    WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->id_eff_Weight*WWTree->trig_eff_Weight;
+    //WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->id_eff_Weight*WWTree->trig_eff_Weight;
+    WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->id_eff_Weight;
     WWTree->totalEventWeight_2 = WWTree->genWeight*WWTree->eff_and_pu_Weight_2*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
     WWTree->totalEventWeight_3 = WWTree->genWeight*WWTree->eff_and_pu_Weight_3*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
 

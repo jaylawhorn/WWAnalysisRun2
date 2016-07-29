@@ -134,7 +134,7 @@ void setOutputTree::initializeVariables()
   mass_lvjj_run2_PuppiAK4=-999;
   njets=-999;
   njetsPuppi=-999;
-  njets_unmerged=-999;
+  nVBFPairs=-999;
   njetsPuppi_unmerged=-999;
   nBTagJet_loose=-999;
   nBTagJet_medium=-999;
@@ -538,7 +538,7 @@ void setOutputTree::setBranches()
   fTree->Branch("mass_lvjj_run2_PuppiAK4",&mass_lvjj_run2_PuppiAK4,"mass_lvjj_run2_PuppiAK4/F");
   fTree->Branch("njets",&njets,"njets/I");
   fTree->Branch("njetsPuppi",&njetsPuppi,"njetsPuppi/I");
-  fTree->Branch("njets_unmerged",&njets_unmerged,"njets_unmerged/I");
+  fTree->Branch("nVBFPairs",&nVBFPairs,"nVBFPairs/I");
   fTree->Branch("njetsPuppi_unmerged",&njetsPuppi_unmerged,"njetsPuppi_unmerged/I");
   fTree->Branch("nBTagJet_loose",&nBTagJet_loose,"nBTagJet_loose/I");
   fTree->Branch("nBTagJet_medium",&nBTagJet_medium,"nBTagJet_medium/I");

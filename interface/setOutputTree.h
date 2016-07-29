@@ -237,7 +237,7 @@ class setOutputTree {
   float AK8_closerjet_e;
   int njets;
   int njetsPuppi;
-  int njets_unmerged;
+  int nVBFPairs;
   int njetsPuppi_unmerged;
   int nBTagJet_loose;
   int nBTagJet_medium;
