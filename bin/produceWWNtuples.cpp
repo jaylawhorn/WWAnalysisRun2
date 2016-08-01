@@ -34,6 +34,9 @@
 
 using namespace std;
 
+void computeAngles(TLorentzVector thep4H, TLorentzVector thep4Z1, TLorentzVector thep4M11, TLorentzVector thep4M12, TLorentzVector thep4Z2, TLorentzVector thep4M21, TLorentzVector thep4M22, double& costheta1, double& costheta2, double& Phi, double& costhetastar, double& Phi1);
+
+
 //*****PU WEIGHT***************
 
 vector<double> generate_weights(TH1* data_npu_estimated, int isForSynch){
@@ -263,8 +266,8 @@ int main (int argc, char** argv)
   
   //---------start loop on events------------
   std::cout << "---------start loop on events------------" << std::endl;
-  //for (Long64_t jentry=0; jentry<10000;jentry++,jentry2++)
-  for (Long64_t jentry=0; jentry<ReducedTree->fChain->GetEntries();jentry++,jentry2++)
+  //for (Long64_t jentry=0; jentry<ReducedTree->fChain->GetEntries();jentry++,jentry2++)
+  for (Long64_t jentry=0; jentry<100000;jentry++,jentry2++)
   {
     //for (Long64_t jentry=531000; jentry<532000;jentry++,jentry2++) {
     
@@ -278,7 +281,7 @@ int main (int argc, char** argv)
     looseMuon.clear();
     looseEle.clear();
 
-    if (jentry2%1000 == 0) std::cout << "read entry: " << jentry2 <<"/"<<totalEntries<<std:: endl;
+    if (jentry2%10000 == 0) std::cout << "read entry: " << jentry2 <<"/"<<totalEntries<<std:: endl;
     
     //*********************************
     // JSON FILE AND DUPLIACTES IN DATA
@@ -742,12 +745,13 @@ int main (int argc, char** argv)
     WWTree->njets=0;
     std::vector<int> indexGoodAK4Jets;
 
+    //cout<<"For Loop on jets starting......................"<<endl;
     for (unsigned int i=0; i<ReducedTree->JetsNum; i++) //loop on AK4 jet
     {
       bool isCleanedJet = true;
       if (ReducedTree->Jets_PtCorr[i]<=30 || ReducedTree->JetsPt[i]<=20 || fabs(ReducedTree->JetsEta[i])>=2.4)  continue;
       if (ReducedTree->Jets_isLooseJetId[i]==false) continue;
-      if (ReducedTree->Jets_bDiscriminatorICSV[i]>0.800) continue;
+      if (ReducedTree->Jets_bDiscriminatorICSV[i]>0.935) continue;
       
       //CLEANING FROM LEPTONS
       for (unsigned int j=0; j<tightEle.size(); j++) {
@@ -797,20 +801,14 @@ int main (int argc, char** argv)
         }
     }
 
-    if (nGoodAK4VBFjets > 0) 
-	{
-	WWTree->isVBFJet=1;
-	cutEff[6]++;
-	}
+//    if (nGoodAK4VBFjets == 0) 	cutEff[6]++;
+    if (nGoodAK4VBFjets > 0) 	{WWTree->isVBFJet=1;	cutEff[6]++;}
 
-    if (nGoodAK4VBFjets > 0 && ReducedTree->Jets_bDiscriminatorICSV[nVBF1] < 0.935 && ReducedTree->Jets_bDiscriminatorICSV[nVBF2]< 0.935){
-	WWTree->isVBFJet_NoB=1;
-    	cutEff[7]++;
-	}
+    if (nGoodAK4VBFjets > 0 && ReducedTree->Jets_bDiscriminatorICSV[nVBF1] < 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nVBF2]< 0.800)
+    	{WWTree->isVBFJet_NoB=1;  	cutEff[7]++;}
+
       if (nVBF1!=-1 && nVBF2!=-1) //save infos for vbf jet pair
       {
-        // nVBF1=0; nVBF2=1;
-        
         VBF1.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[nVBF1],ReducedTree->JetsEta[nVBF1],ReducedTree->JetsPhi[nVBF1],ReducedTree->Jets_ECorr[nVBF1]);
         VBF2.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[nVBF2],ReducedTree->JetsEta[nVBF2],ReducedTree->JetsPhi[nVBF2],ReducedTree->Jets_ECorr[nVBF2]);
         TOT = VBF1 + VBF2;
@@ -829,61 +827,35 @@ int main (int argc, char** argv)
         WWTree->vbf_maxpt_jj_eta = TOT.Eta();
         WWTree->vbf_maxpt_jj_phi = TOT.Phi();
         WWTree->vbf_maxpt_jj_m = TOT.M();	
+	WWTree->vbf_maxpt_deltaR = deltaR(VBF1.Eta(),VBF1.Phi(),VBF2.Eta(),VBF2.Phi());
       }
 
     //================================ Selection of W-jets: STARTS  =====================================
     int nGoodAK4Wjets = 0;
     int nWjets1 = -1, nWjets2 = -1 ;
     double DeltaMassWindow = 80.;
-    #if 0
-    for(int i=0; i<indexGoodAK4Jets.size()-1;i++)
-    {
-        for(int j=i+1; j<indexGoodAK4Jets.size();j++)
-        {
-    if(indexGoodAK4Jets.at(i) == nVBF1 || indexGoodAK4Jets.at(j) == nVBF2 ) continue;
-    if(indexGoodAK4Jets.at(j) == nVBF1 || indexGoodAK4Jets.at(i) == nVBF2 ) continue;
-//      if (fabs(ReducedTree->JetsEta[indexGoodAK4Jets.at(i)])>=2.0)  continue;
-//      if (fabs(ReducedTree->JetsEta[indexGoodAK4Jets.at(j)])>=3.0)  continue;
-    //coutWjets++;
-            Wjet1_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(i)],ReducedTree->JetsEta[indexGoodAK4Jets.at(i)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(i)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(i)]);
-            Wjet2_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(j)],ReducedTree->JetsEta[indexGoodAK4Jets.at(j)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(j)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(j)]);
-            TOT_Wjet = Wjet1_AK4 + Wjet2_AK4 ;
-            //cout<<"Found Before Check!!!!"<<endl;
-
-
-            if (DeltaMassWindow < abs(TOT_Wjet.M() - 35.)) continue;
-            //cout<<"(Wjet1_AK4+Wjet2_AK4).M()-80. = "<<(Wjet1_AK4+Wjet2_AK4).M()<<endl;
-
-//          cout<< "====> " << Wjet1_AK4.Mag() << "\t" << Wjet2_AK4.Mag() << "\t" << TOT_Wjet.Mag() <<endl;
-
-            DeltaMassWindow = abs(TOT_Wjet.M()-35.); //take the jet pair with largest DeltaEta
-            nWjets1 = indexGoodAK4Jets.at(i); //save position of the 1st W-jet
-            nWjets2 = indexGoodAK4Jets.at(j); //save position of the 2nd W-jet
-            nGoodAK4Wjets++;
-        }
-    }
-    #endif
+    nGoodAK4Wjets = 0;
     for(int i=0; i<indexGoodAK4Jets.size();i++)
     {
-	if(indexGoodAK4Jets.at(0) == nVBF1 || indexGoodAK4Jets.at(0) == nVBF2 ) continue;
+	if (indexGoodAK4Jets.at(i) == nVBF1)	continue;
+	if (indexGoodAK4Jets.at(i) == nVBF2)	continue;
 	nGoodAK4Wjets++;
-	if (nGoodAK4Wjets == 1)
+	if  (nGoodAK4Wjets == 1)	
 	{
-            Wjet1_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(i)],ReducedTree->JetsEta[indexGoodAK4Jets.at(i)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(i)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(i)]);
-            nWjets1 = indexGoodAK4Jets.at(i); //save position of the 1st Wjets
-            nGoodAK4Wjets++;
+		nWjets1 = indexGoodAK4Jets.at(i);
+		Wjet1_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(i)],ReducedTree->JetsEta[indexGoodAK4Jets.at(i)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(i)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(i)]);
 	}
-	if (nGoodAK4Wjets == 2)
+	if  (nGoodAK4Wjets == 2)	
 	{
-            Wjet2_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(i)],ReducedTree->JetsEta[indexGoodAK4Jets.at(i)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(i)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(i)]);
-            nWjets2 = indexGoodAK4Jets.at(i); //save position of the 2nd W-jet
-            nGoodAK4Wjets++;
+		nWjets2 = indexGoodAK4Jets.at(i);
+		Wjet2_AK4.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(i)],ReducedTree->JetsEta[indexGoodAK4Jets.at(i)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(i)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(i)]);
 	}
     }
 
-    if (nGoodAK4Wjets == 0){
-    WWTree->isWJets = 1;
-    cutEff[8]++;}
+    if (nGoodAK4Wjets >= 2 && nGoodAK4VBFjets > 0 && ReducedTree->Jets_bDiscriminatorICSV[nVBF1] < 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nVBF2]< 0.800)
+    {    
+    	WWTree->isWJets = 1;    cutEff[8]++;
+    }
     if ( nWjets1 != -1 && nWjets2 != -1 ) {
     //cout<<nWjets1<<"\t"<<nWjets2<<endl;
     Wjets1.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[nWjets1],ReducedTree->JetsEta[nWjets1],ReducedTree->JetsPhi[nWjets1],ReducedTree->Jets_ECorr[nWjets1]);
@@ -907,6 +879,7 @@ int main (int argc, char** argv)
 
     WWTree->AK4_jetjet_pt = (TOT_Wjet_Final).Pt();
     WWTree->AK4_jetjet_mass = (TOT_Wjet_Final).M();
+    //std::cout<<"Wjets1.Eta() = "<<Wjets1.Eta()<<"\tWjets2.Eta() = "<<Wjets2.Eta()<<"\t deltaEta = "<<deltaEta(Wjets1.Eta(),Wjets2.Eta())<<endl;
     WWTree->AK4_jetjet_deltaeta = deltaEta(Wjets1.Eta(),Wjets2.Eta());
     WWTree->AK4_jetjet_deltaphi = deltaPhi(Wjets1.Phi(),Wjets2.Phi());
     WWTree->AK4_jetjet_deltar = deltaR(Wjets1.Eta(),Wjets1.Phi(),Wjets2.Eta(),Wjets2.Phi());
@@ -927,6 +900,22 @@ int main (int argc, char** argv)
     WWTree->mass_lvjj_run2_AK4  = (LEP + NU1 + Wjets1 + Wjets2).M();
     
    } 
+	if (nGoodAK4Wjets != 0 && nGoodAK4Wjets != 0){
+	WWTree->zepnE = WWTree->l_eta - ((WWTree->vbf_maxpt_j1_eta + WWTree->vbf_maxpt_j2_eta)/2.0);
+	WWTree->zepnWj1 = WWTree->AK4_jet1_eta - ((WWTree->vbf_maxpt_j1_eta + WWTree->vbf_maxpt_j2_eta)/2.0);
+	WWTree->zepnWj2 = WWTree->AK4_jet2_eta - ((WWTree->vbf_maxpt_j1_eta + WWTree->vbf_maxpt_j2_eta)/2.0);
+	}
+
+	if (nGoodAK4Wjets != 0){
+        double a_costheta1, a_costheta2, a_costhetastar, a_Phi, a_Phi1;
+        computeAngles( LEP + NU0 + Wjets1 + Wjets2, LEP + NU0, LEP, NU0, Wjets1 + Wjets2, Wjets1, Wjets2, 
+                      a_costheta1, a_costheta2, a_Phi, a_costhetastar, a_Phi1);
+	WWTree->costheta1 = a_costheta1;
+	WWTree->costheta2 = a_costheta2;
+	WWTree->Phi	  = a_Phi;
+	WWTree->costhetastar = a_costhetastar;
+	WWTree->Phi1	= a_Phi1;	
+	}
 
 /*     
     //////////////////FOUR-BODY INVARIANT MASS
@@ -1107,15 +1096,15 @@ int main (int argc, char** argv)
   std::cout<<"MC matching: "<<(float)ok/(float)total<<std::endl;
   std::cout<<"negative events: "<<nNegEvents<<std::endl;
   std::cout << std::endl;
-  std::cout<<"(0) all events:        	"<<cutEff[0]<<std::endl
-	   <<"(1) tight lepton:      	"<<cutEff[1]<<std::endl
-	   <<"(2) loose lepton veto: 	"<<cutEff[2]<<std::endl
-	   <<"(3) MET:               	"<<cutEff[3]<<std::endl
-	   <<"(4) negative lep-MET:  	"<<cutEff[4]<<std::endl
-	   <<"(5) At Least 4 AK4 jets:  "<<cutEff[5]<<std::endl
-	   <<"(6) VBF pair found:      	"<<cutEff[6]<<std::endl
-	   <<"(7) B-tag on VBF pair:    "<<cutEff[7]<<std::endl
-	   <<"(7) Found W-jets:		"<<cutEff[8]<<std::endl;
+  std::cout<<"(0) all events:        	"<<cutEff[0]<<"\t"<<((nEvents-cutEff[0])*100)/nEvents <<std::endl
+	   <<"(1) tight lepton:      	"<<cutEff[1]<<"\t"<<((cutEff[0]-cutEff[1])*100)/cutEff[0] <<std::endl
+	   <<"(2) loose lepton veto: 	"<<cutEff[2]<<"\t"<<((cutEff[1]-cutEff[2])*100)/cutEff[1] <<std::endl
+	   <<"(3) MET:               	"<<cutEff[3]<<"\t"<<((cutEff[2]-cutEff[3])*100)/cutEff[2] <<std::endl
+	   <<"(4) negative lep-MET:  	"<<cutEff[4]<<"\t"<<((cutEff[3]-cutEff[4])*100)/cutEff[3] <<std::endl
+	   <<"(5) At Least 4 AK4 jets:  "<<cutEff[5]<<"\t"<<((cutEff[4]-cutEff[5])*100)/cutEff[4] <<std::endl
+	   <<"(6) VBF pair found:      	"<<cutEff[6]<<"\t"<<((cutEff[5]-cutEff[6])*100)/cutEff[5] <<std::endl
+	   <<"(7) B-tag on VBF pair:    "<<cutEff[7]<<"\t"<<((cutEff[6]-cutEff[7])*100)/cutEff[6] <<std::endl
+	   <<"(8) Found W-jets:		"<<cutEff[8]<<"\t"<<((cutEff[7]-cutEff[8])*100)/cutEff[7] <<std::endl;
   
   //--------close everything-------------
   ReducedTree->fChain->Delete();
@@ -1124,3 +1113,102 @@ int main (int argc, char** argv)
 
   return(0);
 }
+
+//////////////////////////////////
+//// P A P E R   4 - V E C T O R   D E F I N I T I O N   O F   P H I   A N D   P H I 1
+//////////////////////////////////
+void computeAngles(TLorentzVector thep4H, TLorentzVector thep4Z1, TLorentzVector thep4M11, TLorentzVector thep4M12, TLorentzVector thep4Z2, TLorentzVector thep4M21, TLorentzVector thep4M22, double& costheta1, double& costheta2, double& Phi, double& costhetastar, double& Phi1){
+    
+    ///////////////////////////////////////////////
+    // check for z1/z2 convention, redefine all 4 vectors with convention
+    ///////////////////////////////////////////////	
+    TLorentzVector p4H, p4Z1, p4M11, p4M12, p4Z2, p4M21, p4M22;
+    p4H = thep4H;
+    
+    p4Z1 = thep4Z1; p4M11 = thep4M11; p4M12 = thep4M12;
+    p4Z2 = thep4Z2; p4M21 = thep4M21; p4M22 = thep4M22;
+    //// costhetastar
+	TVector3 boostX = -(thep4H.BoostVector());
+	TLorentzVector thep4Z1inXFrame( p4Z1 );
+	TLorentzVector thep4Z2inXFrame( p4Z2 );	
+	thep4Z1inXFrame.Boost( boostX );
+	thep4Z2inXFrame.Boost( boostX );
+	TVector3 theZ1X_p3 = TVector3( thep4Z1inXFrame.X(), thep4Z1inXFrame.Y(), thep4Z1inXFrame.Z() );
+	TVector3 theZ2X_p3 = TVector3( thep4Z2inXFrame.X(), thep4Z2inXFrame.Y(), thep4Z2inXFrame.Z() );    
+    costhetastar = theZ1X_p3.CosTheta();
+    
+    //// --------------------------- costheta1
+    TVector3 boostV1 = -(thep4Z1.BoostVector());
+    TLorentzVector p4M11_BV1( p4M11 );
+	TLorentzVector p4M12_BV1( p4M12 );	
+    TLorentzVector p4M21_BV1( p4M21 );
+	TLorentzVector p4M22_BV1( p4M22 );
+    p4M11_BV1.Boost( boostV1 );
+	p4M12_BV1.Boost( boostV1 );
+	p4M21_BV1.Boost( boostV1 );
+	p4M22_BV1.Boost( boostV1 );
+    
+    TLorentzVector p4V2_BV1 = p4M21_BV1 + p4M22_BV1;
+    //// costheta1
+    costheta1 = -p4V2_BV1.Vect().Dot( p4M11_BV1.Vect() )/p4V2_BV1.Vect().Mag()/p4M11_BV1.Vect().Mag();
+    
+    //// --------------------------- costheta2
+    TVector3 boostV2 = -(thep4Z2.BoostVector());
+    TLorentzVector p4M11_BV2( p4M11 );
+	TLorentzVector p4M12_BV2( p4M12 );	
+    TLorentzVector p4M21_BV2( p4M21 );
+	TLorentzVector p4M22_BV2( p4M22 );
+    p4M11_BV2.Boost( boostV2 );
+	p4M12_BV2.Boost( boostV2 );
+	p4M21_BV2.Boost( boostV2 );
+	p4M22_BV2.Boost( boostV2 );
+    
+    TLorentzVector p4V1_BV2 = p4M11_BV2 + p4M12_BV2;
+    //// costheta2
+    costheta2 = -p4V1_BV2.Vect().Dot( p4M21_BV2.Vect() )/p4V1_BV2.Vect().Mag()/p4M21_BV2.Vect().Mag();
+    
+    //// --------------------------- Phi and Phi1
+    //    TVector3 boostX = -(thep4H.BoostVector());
+    TLorentzVector p4M11_BX( p4M11 );
+	TLorentzVector p4M12_BX( p4M12 );	
+    TLorentzVector p4M21_BX( p4M21 );
+	TLorentzVector p4M22_BX( p4M22 );	
+    
+	p4M11_BX.Boost( boostX );
+	p4M12_BX.Boost( boostX );
+	p4M21_BX.Boost( boostX );
+	p4M22_BX.Boost( boostX );
+    
+    TVector3 tmp1 = p4M11_BX.Vect().Cross( p4M12_BX.Vect() );
+    TVector3 tmp2 = p4M21_BX.Vect().Cross( p4M22_BX.Vect() );    
+    
+    TVector3 normal1_BX( tmp1.X()/tmp1.Mag(), tmp1.Y()/tmp1.Mag(), tmp1.Z()/tmp1.Mag() ); 
+    TVector3 normal2_BX( tmp2.X()/tmp2.Mag(), tmp2.Y()/tmp2.Mag(), tmp2.Z()/tmp2.Mag() ); 
+    
+    //// Phi
+    TLorentzVector p4Z1_BX = p4M11_BX + p4M12_BX;    
+    double tmpSgnPhi = p4Z1_BX.Vect().Dot( normal1_BX.Cross( normal2_BX) );
+    double sgnPhi = tmpSgnPhi/fabs(tmpSgnPhi);
+    Phi = sgnPhi * acos( -1.*normal1_BX.Dot( normal2_BX) );
+    
+    
+    //////////////
+    
+    TVector3 beamAxis(0,0,1);
+    TVector3 tmp3 = (p4M11_BX + p4M12_BX).Vect();
+    
+    TVector3 p3V1_BX( tmp3.X()/tmp3.Mag(), tmp3.Y()/tmp3.Mag(), tmp3.Z()/tmp3.Mag() );
+    TVector3 tmp4 = beamAxis.Cross( p3V1_BX );
+    TVector3 normalSC_BX( tmp4.X()/tmp4.Mag(), tmp4.Y()/tmp4.Mag(), tmp4.Z()/tmp4.Mag() );
+    
+    //// Phi1
+    double tmpSgnPhi1 = p4Z1_BX.Vect().Dot( normal1_BX.Cross( normalSC_BX) );
+    double sgnPhi1 = tmpSgnPhi1/fabs(tmpSgnPhi1);    
+    Phi1 = sgnPhi1 * acos( normal1_BX.Dot( normalSC_BX) );    
+    
+    //    std::cout << "extractAngles: " << std::endl;
+    //    std::cout << "costhetastar = " << costhetastar << ", costheta1 = " << costheta1 << ", costheta2 = " << costheta2 << std::endl;
+    //    std::cout << "Phi = " << Phi << ", Phi1 = " << Phi1 << std::endl;    
+    
+}
+

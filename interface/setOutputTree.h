@@ -310,6 +310,14 @@ class setOutputTree {
   float AK4_2_mass_gen;
   float AK4_BIG_gen_mass;
   float deltaR_AK4;
+  float costheta1;
+  float costheta2;
+  float Phi;
+  float costhetastar;
+  float Phi1;
+  float zepnE;
+  float zepnWj1;
+  float zepnWj2;
 
   setOutputTree(TTree* outputTree);
   //  setOutputTree(TTree *outputTree=0);

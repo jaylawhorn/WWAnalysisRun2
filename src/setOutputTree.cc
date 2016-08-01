@@ -312,6 +312,14 @@ void setOutputTree::initializeVariables()
   AK4_2_mass_gen=-999;
   AK4_BIG_gen_mass=-999;
   deltaR_AK4=-999;
+  costheta1=-999;
+  costheta2=-999;
+  Phi=-999;
+  costhetastar=-999;
+  Phi1=-999;
+  zepnE=-999;
+  zepnWj1=-999;
+  zepnWj2=-999;
 
 }
 
@@ -618,4 +626,12 @@ void setOutputTree::setBranches()
   fTree->Branch("AK4_2_mass_gen",&AK4_2_mass_gen,"AK4_2_mass_gen/F");
   fTree->Branch("AK4_BIG_gen_mass",&AK4_BIG_gen_mass,"AK4_BIG_gen_mass/F");
   fTree->Branch("deltaR_AK4",&deltaR_AK4,"deltaR_AK4/F");
+  fTree->Branch("costheta1",&costheta1,"costheta1/F");
+  fTree->Branch("costheta2",&costheta2,"costheta2/F");
+  fTree->Branch("Phi",&Phi,"Phi/F");
+  fTree->Branch("costhetastar",&costhetastar,"costhetastar/F");
+  fTree->Branch("Phi1",&Phi1,"Phi1/F");
+  fTree->Branch("zepnE",&zepnE,"zepnE/F");
+  fTree->Branch("zepnWj1",&zepnWj1,"zepnWj1/F");
+  fTree->Branch("zepnWj2",&zepnWj2,"zepnWj2/F");
 }
