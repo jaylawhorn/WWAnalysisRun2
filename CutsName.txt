@@ -1,0 +1,10 @@
+Sample/Cuts
+all_Events
+tight_lepton
+loose_lepton_veto
+MET
+neg_lep-MET
+at_Least_4_AK4_jets
+VBF_pair_found
+b-tag_veto_on_VBF
+Found_W-jets
