@@ -7,12 +7,12 @@ for d in ./LSFJOB*/;do
 	if [[ "$tempVar" == "el" ]];then
 		#echo $tempVar
 		#grep "TreeMaker2/PreSelection" $d/STDOUT | awk '{print $7}' > ${tempVar}_${tempFile}.dat
-		awk '{ if (lines > 0) {print; --lines; }} /SUMMARY/ {lines = 14}' < $d/STDOUT | awk 'FNR > 5' | awk '{print $NF}' >> ${tempVar}_${tempFile}.dat
+		awk '{ if (lines > 0) {print; --lines; }} /SUMMARY/ {lines = 14}' < $d/STDOUT | awk 'FNR > 5' | awk '{print $(NF-1)}' >> ${tempVar}_${tempFile}.dat
 	fi
 	if [[ "$tempVar" == "mu" ]];then
 		#echo $tempVar
 		#grep "TreeMaker2/PreSelection" $d/STDOUT | awk '{print $7}' > ${tempVar}_${tempFile}.dat
-		awk '{ if (lines > 0) {print; --lines; }} /SUMMARY/ {lines = 14}' < $d/STDOUT | awk 'FNR > 5' | awk '{print $NF}' >> ${tempVar}_${tempFile}.dat
+		awk '{ if (lines > 0) {print; --lines; }} /SUMMARY/ {lines = 14}' < $d/STDOUT | awk 'FNR > 5' | awk '{print $(NF-1)}' >> ${tempVar}_${tempFile}.dat
 	fi
 done
 
@@ -42,7 +42,8 @@ awk '{a[FNR]+=$1;} END{for (i=1; i<=FNR; i++) print a[i]}'	el_WJets*.dat		>>	el_
 #(echo 0;	cat el_tch_bar.dat;)	>	el_tch_bar_evt.dat
 #(echo 0;	cat el_tWch.dat;)	>	el_tWch_evt.dat
 #(echo 0;	cat el_tWch_bar.dat;)	>	el_tWch_bar_evt.dat
-paste CutsName.txt	el_data_evt.dat el_TTbar_evt.dat el_WJetEvt.dat el_WZ_evt.dat el_ZZ_evt.dat el_WW_excl_evt.dat el_sch_evt.dat el_tch_bar_evt.dat el_tWch_evt.dat el_tWch_bar_evt.dat > Ele_Event_Selection.dat
+#paste CutsName.txt	el_data_evt.dat el_TTbar_evt.dat el_WJetEvt.dat el_WZ_evt.dat el_ZZ_evt.dat el_WW_excl_evt.dat el_sch_evt.dat el_tch_bar_evt.dat el_tWch_evt.dat el_tWch_bar_evt.dat > Ele_Event_Selection.dat
+paste 	el_data_evt.dat el_TTbar_evt.dat el_WJetEvt.dat el_WZ_evt.dat el_ZZ_evt.dat el_WW_excl_evt.dat el_sch_evt.dat el_tch_bar_evt.dat el_tWch_evt.dat el_tWch_bar_evt.dat > Ele_Event_Selection.dat
 
 awk 'BEGIN{print "<html>	\n<head>	\n<style>	\ntable, th, td { \n     border: 1px solid black; \n     border-collapse: collapse; \n} \n</style> \n</head> \n<body>	\n<h1>Cut Flow Table For Electron Channel</h1>	\n<table>"} {print "<tr>";for(i=1;i<=NF;i++)print "<td>" $i"</td>";print "</tr>"} END{print "</table>\n"}' Ele_Event_Selection.dat > CutFlowTable_${today}.htm
 
@@ -68,7 +69,8 @@ awk '{a[FNR]+=$1;} END{for (i=1; i<=FNR; i++) print a[i]}'	mu_WJets*.dat		>>	mu_
 (echo tWch_bar;	cat mu_tWch_bar.dat;)	>	mu_tWch_bar_evt.dat
 
 
-paste CutsName.txt	mu_data_evt.dat mu_TTbar_evt.dat mu_WJetEvt.dat mu_WZ_evt.dat mu_ZZ_evt.dat mu_WW_excl_evt.dat mu_sch_evt.dat mu_tch_bar_evt.dat mu_tWch_evt.dat mu_tWch_bar_evt.dat > Mu_Event_Selection.dat
+#paste CutsName.txt	mu_data_evt.dat mu_TTbar_evt.dat mu_WJetEvt.dat mu_WZ_evt.dat mu_ZZ_evt.dat mu_WW_excl_evt.dat mu_sch_evt.dat mu_tch_bar_evt.dat mu_tWch_evt.dat mu_tWch_bar_evt.dat > Mu_Event_Selection.dat
+paste mu_data_evt.dat mu_TTbar_evt.dat mu_WJetEvt.dat mu_WZ_evt.dat mu_ZZ_evt.dat mu_WW_excl_evt.dat mu_sch_evt.dat mu_tch_bar_evt.dat mu_tWch_evt.dat mu_tWch_bar_evt.dat > Mu_Event_Selection.dat
 
 awk 'BEGIN{print "\n<h1>Cut Flow Table For Muon Channel</h1>	\n<table>"} {print "<tr>";for(i=1;i<=NF;i++)print "<td>" $i"</td>";print "</tr>"} END{print "</table>\n</body>\n</html>"}' Mu_Event_Selection.dat >> CutFlowTable_${today}.htm
 #awk 'BEGIN{print "<html>	\n<head>	\n<style>	\ntable, th, td { \n     border: 1px solid black; \n     border-collapse: collapse; \n} \n</style> \n</head> \n<body>	\n<h1>Cut Flow Table For Muon Channel</h1>	\n<table>"} {print "<tr>";for(i=1;i<=NF;i++)print "<td>" $i"</td>";print "</tr>"} END{print "</table>\n</body>\n</html>"}' Mu_Event_Selection.dat > Mu_Event_Selection.htm

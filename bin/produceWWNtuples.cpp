@@ -149,8 +149,8 @@ int main (int argc, char** argv)
 
 
   char command1[3000];
-  //sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
-  sprintf(command1, "ls /tmp/rasharma/ueos/user/r/rasharma/aQGC_Studies/FirstStepOutput/%s/*.root  | awk '{print $1}' > listTemp_%s.txt", (inputFile).c_str(), outputFile.c_str());
+  sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
+  //sprintf(command1, "ls /tmp/rasharma/ueos/user/r/rasharma/aQGC_Studies/FirstStepOutput/%s/*.root  | awk '{print $1}' > listTemp_%s.txt", (inputFile).c_str(), outputFile.c_str());
   std::cout<<command1<<std::endl;
   std::cout<<"Scale Factor for this sample = "<<weight<<endl;
   system(command1);
@@ -216,8 +216,8 @@ int main (int argc, char** argv)
   TFile* GSFCorrEle = TFile::Open("egammaEffi.txt_SF2D_GSF_tracking.root","READ");
   TH1F *hGSFCorrEle = (TH1F*)GSFCorrEle->Get("EGamma_SF2D");
 
-  TFile* TriggerEffEle = TFile::Open("SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root","READ");
-  TH1F *hTriggerEffEle = (TH1F*)TriggerEffEle->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run273158_to_274093/efficienciesDATA/abseta_pt_DATA");
+  TFile* TriggerEffEle = TFile::Open("HLT_Ele27_WPLoose_eta2p1.root","READ");
+  TH1F *hTriggerEffEle = (TH1F*)TriggerEffEle->Get("hpass");
 
   TFile* IDMu = TFile::Open("MuonID_Z_RunBCD_prompt80X_7p65.root","READ");
   TH1F *hIDMu = (TH1F*)IDMu->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/abseta_pt_ratio");
@@ -266,8 +266,8 @@ int main (int argc, char** argv)
   
   //---------start loop on events------------
   std::cout << "---------start loop on events------------" << std::endl;
-  //for (Long64_t jentry=0; jentry<ReducedTree->fChain->GetEntries();jentry++,jentry2++)
-  for (Long64_t jentry=0; jentry<100000;jentry++,jentry2++)
+  //for (Long64_t jentry=0; jentry<100000;jentry++,jentry2++)
+  for (Long64_t jentry=0; jentry<ReducedTree->fChain->GetEntries();jentry++,jentry2++)
   {
     //for (Long64_t jentry=531000; jentry<532000;jentry++,jentry2++) {
     
@@ -751,7 +751,6 @@ int main (int argc, char** argv)
       bool isCleanedJet = true;
       if (ReducedTree->Jets_PtCorr[i]<=30 || ReducedTree->JetsPt[i]<=20 || fabs(ReducedTree->JetsEta[i])>=2.4)  continue;
       if (ReducedTree->Jets_isLooseJetId[i]==false) continue;
-      if (ReducedTree->Jets_bDiscriminatorICSV[i]>0.935) continue;
       
       //CLEANING FROM LEPTONS
       for (unsigned int j=0; j<tightEle.size(); j++) {
@@ -852,7 +851,7 @@ int main (int argc, char** argv)
 	}
     }
 
-    if (nGoodAK4Wjets >= 2 && nGoodAK4VBFjets > 0 && ReducedTree->Jets_bDiscriminatorICSV[nVBF1] < 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nVBF2]< 0.800)
+    if (nGoodAK4Wjets >= 2 && nGoodAK4VBFjets > 0 && ReducedTree->Jets_bDiscriminatorICSV[nVBF1] < 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nVBF2]< 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nWjets1] < 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nWjets2] < 0.800 )
     {    
     	WWTree->isWJets = 1;    cutEff[8]++;
     }
@@ -866,6 +865,7 @@ int main (int argc, char** argv)
     WWTree->AK4_jet1_eta = ReducedTree->JetsEta[nWjets1];
     WWTree->AK4_jet1_phi = ReducedTree->JetsPhi[nWjets1];
     WWTree->AK4_jet1_e   = ReducedTree->Jets_ECorr[nWjets1];
+    WWTree->AK4_jet1_bDiscriminatorCSV = ReducedTree->Jets_bDiscriminatorICSV[nWjets1];
     WWTree->AK4_jet1_pt_jes_up = (ReducedTree->Jets_PtCorr[nWjets1]/ReducedTree->Jets_AK4correction[nWjets1])*ReducedTree->Jets_AK4correctionUp[nWjets1];
     WWTree->AK4_jet1_pt_jes_dn = (ReducedTree->Jets_PtCorr[nWjets1]/ReducedTree->Jets_AK4correction[nWjets1])*ReducedTree->Jets_AK4correctionDown[nWjets1];
 
@@ -873,6 +873,7 @@ int main (int argc, char** argv)
     WWTree->AK4_jet2_eta = ReducedTree->JetsEta[nWjets2];
     WWTree->AK4_jet2_phi = ReducedTree->JetsPhi[nWjets2];
     WWTree->AK4_jet2_e   = ReducedTree->Jets_ECorr[nWjets2];
+    WWTree->AK4_jet2_bDiscriminatorCSV = ReducedTree->Jets_bDiscriminatorICSV[nWjets2];
     WWTree->AK4_jet2_pt_jes_up = (ReducedTree->Jets_PtCorr[nWjets2]/ReducedTree->Jets_AK4correction[nWjets2])*ReducedTree->Jets_AK4correctionUp[nWjets2];
     WWTree->AK4_jet2_pt_jes_dn = (ReducedTree->Jets_PtCorr[nWjets2]/ReducedTree->Jets_AK4correction[nWjets2])*ReducedTree->Jets_AK4correctionDown[nWjets2];
 
@@ -1062,9 +1063,9 @@ int main (int argc, char** argv)
     
 //    WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
     //WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->id_eff_Weight*WWTree->trig_eff_Weight;
-    WWTree->totalEventWeight = WWTree->genWeight*WWTree->eff_and_pu_Weight*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->id_eff_Weight;
-    WWTree->totalEventWeight_2 = WWTree->genWeight*WWTree->eff_and_pu_Weight_2*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
-    WWTree->totalEventWeight_3 = WWTree->genWeight*WWTree->eff_and_pu_Weight_3*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight;
+    WWTree->totalEventWeight = WWTree->eff_and_pu_Weight*WWTree->id_eff_Weight;
+    WWTree->totalEventWeight_2 = WWTree->eff_and_pu_Weight*WWTree->trig_eff_Weight*WWTree->id_eff_Weight;
+    WWTree->totalEventWeight_3 = WWTree->eff_and_pu_Weight_3*WWTree->top1_NNLO_Weight*WWTree->top2_NNLO_Weight*WWTree->trig_eff_Weight*WWTree->id_eff_Weight;
 
     
     bool isBadEvent=false;

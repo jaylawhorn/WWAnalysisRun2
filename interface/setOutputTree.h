@@ -133,6 +133,7 @@ class setOutputTree {
   float AK4_jet1_eta;
   float AK4_jet1_phi;
   float AK4_jet1_e;
+  float AK4_jet1_bDiscriminatorCSV;
   float AK4_jet2_pt;
   float AK4_jet2_pt_jes_up;
   float AK4_jet2_pt_jes_dn;
@@ -142,6 +143,7 @@ class setOutputTree {
   float AK4_jet2_eta;
   float AK4_jet2_phi;
   float AK4_jet2_e;
+  float AK4_jet2_bDiscriminatorCSV;
   float PuppiAK4_jet1_pt;
   float PuppiAK4_jet1_pt_jes_up;
   float PuppiAK4_jet1_pt_jes_dn;

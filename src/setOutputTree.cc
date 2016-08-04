@@ -209,6 +209,7 @@ void setOutputTree::initializeVariables()
   AK4_jet1_eta=-999;
   AK4_jet1_phi=-999;
   AK4_jet1_e=-999;
+  AK4_jet1_bDiscriminatorCSV=-999;
   AK4_jet2_pt=-999;
   AK4_jet2_pt_jes_up=-999;
   AK4_jet2_pt_jes_dn=-999;
@@ -218,6 +219,7 @@ void setOutputTree::initializeVariables()
   AK4_jet2_eta=-999;
   AK4_jet2_phi=-999;
   AK4_jet2_e=-999;
+  AK4_jet2_bDiscriminatorCSV=-999;
   PuppiAK4_jet1_pt=-999;
   PuppiAK4_jet1_pt_jes_up=-999;
   PuppiAK4_jet1_pt_jes_dn=-999;
