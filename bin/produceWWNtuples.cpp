@@ -149,8 +149,8 @@ int main (int argc, char** argv)
 
 
   char command1[3000];
-  //sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
-  sprintf(command1, "ls /tmp/rasharma/ueos/user/r/rasharma/aQGC_Studies/FirstStepOutput/%s/*.root  | awk '{print $1}' > listTemp_%s.txt", (inputFile).c_str(), outputFile.c_str());
+  sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
+  //sprintf(command1, "ls /tmp/rasharma/ueos/user/r/rasharma/aQGC_Studies/FirstStepOutput/%s/*.root  | awk '{print $1}' > listTemp_%s.txt", (inputFile).c_str(), outputFile.c_str());
   std::cout<<command1<<std::endl;
   std::cout<<"Scale Factor for this sample = "<<weight<<endl;
   system(command1);
@@ -771,63 +771,14 @@ int main (int argc, char** argv)
       nGoodAK4jets++;
       indexGoodAK4Jets.push_back(i); //save index of the "good" jets candidate
       }
-      if (indexGoodAK4Jets.size()<4)  continue;
+      if (indexGoodAK4Jets.size()<2)  continue;
       cutEff[5]++;
 
     float DeltaEta = 0.;
     int nVBF1=-1, nVBF2=-1; //position of the two vbf jets
 
     int nGoodAK4VBFjets = 0;
-    WWTree->nVBFPairs=0;
 
-    //================================ Selection of VBF jets: BEGIN =====================================
-    for(int i=0; i<indexGoodAK4Jets.size()-1;i++)
-    {
-        for(int j=i+1; j<indexGoodAK4Jets.size();j++)
-        {
-            VBF1.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(i)],ReducedTree->JetsEta[indexGoodAK4Jets.at(i)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(i)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(i)]);
-            VBF2.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[indexGoodAK4Jets.at(j)],ReducedTree->JetsEta[indexGoodAK4Jets.at(j)],ReducedTree->JetsPhi[indexGoodAK4Jets.at(j)],ReducedTree->Jets_ECorr[indexGoodAK4Jets.at(j)]);
-
-            if (DeltaEta > abs(VBF1.Eta()-VBF2.Eta()) || VBF1.Eta()*VBF2.Eta() > 0 || (VBF1+VBF2).M()<500) continue;
-            if (abs(VBF1.Eta()-VBF2.Eta())<3.5) continue;
-
-            DeltaEta = abs(VBF1.Eta()-VBF2.Eta()); //take the jet pair with largest DeltaEta
-            nVBF1 = indexGoodAK4Jets.at(i); //save position of the 1st vbf jet
-            nVBF2 = indexGoodAK4Jets.at(j); //save position of the 2nd vbf jet
-
-    	nGoodAK4VBFjets++;
-	WWTree->nVBFPairs++;
-        }
-    }
-
-//    if (nGoodAK4VBFjets == 0) 	cutEff[6]++;
-    if (nGoodAK4VBFjets > 0) 	{WWTree->isVBFJet=1;	cutEff[6]++;}
-
-    if (nGoodAK4VBFjets > 0 && ReducedTree->Jets_bDiscriminatorICSV[nVBF1] < 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nVBF2]< 0.800)
-    	{WWTree->isVBFJet_NoB=1;  	cutEff[7]++;}
-
-      if (nVBF1!=-1 && nVBF2!=-1) //save infos for vbf jet pair
-      {
-        VBF1.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[nVBF1],ReducedTree->JetsEta[nVBF1],ReducedTree->JetsPhi[nVBF1],ReducedTree->Jets_ECorr[nVBF1]);
-        VBF2.SetPtEtaPhiE(ReducedTree->Jets_PtCorr[nVBF2],ReducedTree->JetsEta[nVBF2],ReducedTree->JetsPhi[nVBF2],ReducedTree->Jets_ECorr[nVBF2]);
-        TOT = VBF1 + VBF2;
-	
-        WWTree->vbf_maxpt_j1_pt = ReducedTree->Jets_PtCorr[nVBF1];
-        WWTree->vbf_maxpt_j1_eta = ReducedTree->JetsEta[nVBF1];
-        WWTree->vbf_maxpt_j1_phi = ReducedTree->JetsPhi[nVBF1];
-        WWTree->vbf_maxpt_j1_e = ReducedTree->Jets_ECorr[nVBF1];
-        WWTree->vbf_maxpt_j1_bDiscriminatorCSV = ReducedTree->Jets_bDiscriminatorICSV[nVBF1];
-        WWTree->vbf_maxpt_j2_pt = ReducedTree->Jets_PtCorr[nVBF2];
-        WWTree->vbf_maxpt_j2_eta = ReducedTree->JetsEta[nVBF2];
-        WWTree->vbf_maxpt_j2_phi = ReducedTree->JetsPhi[nVBF2];
-        WWTree->vbf_maxpt_j2_e = ReducedTree->Jets_ECorr[nVBF2];
-        WWTree->vbf_maxpt_j2_bDiscriminatorCSV = ReducedTree->Jets_bDiscriminatorICSV[nVBF2];
-        WWTree->vbf_maxpt_jj_pt = TOT.Pt();
-        WWTree->vbf_maxpt_jj_eta = TOT.Eta();
-        WWTree->vbf_maxpt_jj_phi = TOT.Phi();
-        WWTree->vbf_maxpt_jj_m = TOT.M();	
-	WWTree->vbf_maxpt_deltaR = deltaR(VBF1.Eta(),VBF1.Phi(),VBF2.Eta(),VBF2.Phi());
-      }
 
     //================================ Selection of W-jets: STARTS  =====================================
     int nGoodAK4Wjets = 0;
@@ -836,8 +787,6 @@ int main (int argc, char** argv)
     nGoodAK4Wjets = 0;
     for(int i=0; i<indexGoodAK4Jets.size();i++)
     {
-	if (indexGoodAK4Jets.at(i) == nVBF1)	continue;
-	if (indexGoodAK4Jets.at(i) == nVBF2)	continue;
 	nGoodAK4Wjets++;
 	if  (nGoodAK4Wjets == 1)	
 	{
@@ -851,7 +800,7 @@ int main (int argc, char** argv)
 	}
     }
 
-    if (nGoodAK4Wjets >= 2 && nGoodAK4VBFjets > 0 && ReducedTree->Jets_bDiscriminatorICSV[nVBF1] < 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nVBF2]< 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nWjets1] < 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nWjets2] < 0.800 )
+    if (nGoodAK4Wjets >= 2 && ReducedTree->Jets_bDiscriminatorICSV[nWjets1] < 0.800 && ReducedTree->Jets_bDiscriminatorICSV[nWjets2] < 0.800 )
     {    
     	WWTree->isWJets = 1;    cutEff[8]++;
     }
@@ -896,16 +845,7 @@ int main (int argc, char** argv)
     }
 
 
-    WWTree->mass_lvjj_type0_AK4 = (LEP + NU0 + Wjets1 + Wjets2).M();
-    WWTree->mass_lvjj_type2_AK4 = (LEP + NU2 + Wjets1 + Wjets2).M();
-    WWTree->mass_lvjj_run2_AK4  = (LEP + NU1 + Wjets1 + Wjets2).M();
-    
    } 
-	if (nGoodAK4Wjets != 0 && nGoodAK4Wjets != 0){
-	WWTree->zepnE = WWTree->l_eta - ((WWTree->vbf_maxpt_j1_eta + WWTree->vbf_maxpt_j2_eta)/2.0);
-	WWTree->zepnWj1 = WWTree->AK4_jet1_eta - ((WWTree->vbf_maxpt_j1_eta + WWTree->vbf_maxpt_j2_eta)/2.0);
-	WWTree->zepnWj2 = WWTree->AK4_jet2_eta - ((WWTree->vbf_maxpt_j1_eta + WWTree->vbf_maxpt_j2_eta)/2.0);
-	}
 
 	if (nGoodAK4Wjets != 0){
         double a_costheta1, a_costheta2, a_costhetastar, a_Phi, a_Phi1;
@@ -918,34 +858,6 @@ int main (int argc, char** argv)
 	WWTree->Phi1	= a_Phi1;	
 	}
 
-/*     
-    //////////////////FOUR-BODY INVARIANT MASS
-    WWTree->mass_lvj_type0 = (LEP + NU0 + JET).M();
-    WWTree->mass_lvj_type2 = (LEP + NU2 + JET).M();
-    WWTree->mass_lvj_run2  = (LEP + NU1 + JET).M();
-    WWTree->mass_lvj_type0_met_jes_up = (LEP + NU0_jes_up + JET_jes_up).M();
-    WWTree->mass_lvj_type0_met_jes_dn = (LEP + NU0_jes_dn + JET_jes_dn).M();
-    
-    WWTree->mass_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).M();
-    WWTree->mass_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).M();
-    WWTree->mass_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).M();
-    WWTree->mass_lvj_type0_met_PuppiAK8_jes_up = (LEP + NU0_jes_up + JET_PuppiAK8_jes_up).M();
-    WWTree->mass_lvj_type0_met_PuppiAK8_jes_dn = (LEP + NU0_jes_dn + JET_PuppiAK8_jes_dn).M();
-    
-    WWTree->mass_lvjj_type0_AK4 = (LEP + NU0 + AK4_JET1 + AK4_JET2).M();
-    WWTree->mass_lvjj_type2_AK4 = (LEP + NU2 + AK4_JET1 + AK4_JET2).M();
-    WWTree->mass_lvjj_run2_AK4  = (LEP + NU1 + AK4_JET1 + AK4_JET2).M();
-    WWTree->mass_lvjj_type0_met_jes_up_AK4 = (LEP + NU0_jes_up + AK4_JET1_jes_up + AK4_JET2_jes_up).M();
-    WWTree->mass_lvjj_type0_met_jes_dn_AK4 = (LEP + NU0_jes_dn + AK4_JET1_jes_dn + AK4_JET2_jes_dn).M();
-    
-    WWTree->mass_lvjj_type0_PuppiAK4 = (LEP + NU0 + PuppiAK4_JET1 + PuppiAK4_JET2).M();
-    WWTree->mass_lvjj_type2_PuppiAK4 = (LEP + NU2 + PuppiAK4_JET1 + PuppiAK4_JET2).M();
-    WWTree->mass_lvjj_run2_PuppiAK4  = (LEP + NU1 + PuppiAK4_JET1 + PuppiAK4_JET2).M();
-    WWTree->mass_lvjj_type0_met_jes_up_PuppiAK4 = (LEP + NU0_jes_up + PuppiAK4_JET1_jes_up + PuppiAK4_JET2_jes_up).M();
-    WWTree->mass_lvjj_type0_met_jes_dn_PuppiAK4 = (LEP + NU0_jes_dn + PuppiAK4_JET1_jes_dn + PuppiAK4_JET2_jes_dn).M();
-    
-
-    */
     
     
     /////////////////MC Infos
@@ -1103,9 +1015,9 @@ int main (int argc, char** argv)
 	   <<"(3) MET:               	"<<cutEff[3]<<"\t"<<((cutEff[2]-cutEff[3])*100)/cutEff[2] <<std::endl
 	   <<"(4) negative lep-MET:  	"<<cutEff[4]<<"\t"<<((cutEff[3]-cutEff[4])*100)/cutEff[3] <<std::endl
 	   <<"(5) At Least 4 AK4 jets:  "<<cutEff[5]<<"\t"<<((cutEff[4]-cutEff[5])*100)/cutEff[4] <<std::endl
-	   <<"(6) VBF pair found:      	"<<cutEff[6]<<"\t"<<((cutEff[5]-cutEff[6])*100)/cutEff[5] <<std::endl
-	   <<"(7) B-tag on VBF pair:    "<<cutEff[7]<<"\t"<<((cutEff[6]-cutEff[7])*100)/cutEff[6] <<std::endl
-	   <<"(8) Found W-jets:		"<<cutEff[8]<<"\t"<<((cutEff[7]-cutEff[8])*100)/cutEff[7] <<std::endl;
+	  // <<"(6) VBF pair found:      	"<<cutEff[6]<<"\t"<<((cutEff[5]-cutEff[6])*100)/cutEff[5] <<std::endl
+	  // <<"(7) B-tag on VBF pair:    "<<cutEff[7]<<"\t"<<((cutEff[6]-cutEff[7])*100)/cutEff[6] <<std::endl
+	   <<"(8) Found W-jets:		"<<cutEff[8]<<"\t"<<((cutEff[5]-cutEff[8])*100)/cutEff[5] <<std::endl;
   
   //--------close everything-------------
   ReducedTree->fChain->Delete();
