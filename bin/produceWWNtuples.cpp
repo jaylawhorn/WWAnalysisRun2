@@ -149,8 +149,8 @@ int main (int argc, char** argv)
 
 
   char command1[3000];
-  sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
-  //sprintf(command1, "ls /tmp/rasharma/ueos/user/r/rasharma/aQGC_Studies/FirstStepOutput/%s/*.root  | awk '{print $1}' > listTemp_%s.txt", (inputFile).c_str(), outputFile.c_str());
+  //sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
+  sprintf(command1, "ls /tmp/rasharma/ueos/user/r/rasharma/aQGC_Studies/FirstStepOutput/%s/*.root  | awk '{print $1}' > listTemp_%s.txt", (inputFile).c_str(), outputFile.c_str());
   std::cout<<command1<<std::endl;
   std::cout<<"Scale Factor for this sample = "<<weight<<endl;
   system(command1);

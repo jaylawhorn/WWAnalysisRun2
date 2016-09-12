@@ -439,6 +439,7 @@ void setOutputTree::setBranches()
   fTree->Branch("AK4_jet1_eta",&AK4_jet1_eta,"AK4_jet1_eta/F");
   fTree->Branch("AK4_jet1_phi",&AK4_jet1_phi,"AK4_jet1_phi/F");
   fTree->Branch("AK4_jet1_e",&AK4_jet1_e,"AK4_jet1_e/F");
+  fTree->Branch("AK4_jet1_bDiscriminatorCSV",&AK4_jet1_bDiscriminatorCSV,"AK4_jet1_bDiscriminatorCSV/F");
   fTree->Branch("AK4_jet2_pt",&AK4_jet2_pt,"AK4_jet2_pt/F");
   fTree->Branch("AK4_jet2_pt_jes_up",&AK4_jet2_pt_jes_up,"AK4_jet2_pt_jes_up/F");
   fTree->Branch("AK4_jet2_pt_jes_dn",&AK4_jet2_pt_jes_dn,"AK4_jet2_pt_jes_dn/F");
@@ -448,6 +449,7 @@ void setOutputTree::setBranches()
   fTree->Branch("AK4_jet2_eta",&AK4_jet2_eta,"AK4_jet2_eta/F");
   fTree->Branch("AK4_jet2_phi",&AK4_jet2_phi,"AK4_jet2_phi/F");
   fTree->Branch("AK4_jet2_e",&AK4_jet2_e,"AK4_jet2_e/F");
+  fTree->Branch("AK4_jet2_bDiscriminatorCSV",&AK4_jet2_bDiscriminatorCSV,"AK4_jet2_bDiscriminatorCSV/F");
   fTree->Branch("PuppiAK4_jet1_pt",&PuppiAK4_jet1_pt,"PuppiAK4_jet1_pt/F");
   fTree->Branch("PuppiAK4_jet1_pt_jes_up",&PuppiAK4_jet1_pt_jes_up,"PuppiAK4_jet1_pt_jes_up/F");
   fTree->Branch("PuppiAK4_jet1_pt_jes_dn",&PuppiAK4_jet1_pt_jes_dn,"PuppiAK4_jet1_pt_jes_dn/F");
