@@ -76,9 +76,9 @@ void setInputTree::Init()
    fChain->SetBranchAddress("passFilterGlobalTightHalo2016", &passFilterGlobalTightHalo2016, &b_passFilterGlobalTightHalo2016);
    fChain->SetBranchAddress("passFilterBadChCand", &passFilterBadChCand, &b_passFilterBadChCand);
    fChain->SetBranchAddress("passFilterBadPFMuon", &passFilterBadPFMuon, &b_passFilterBadPFMuon);
-   fChain->SetBranchAddress("passFilterHBHELooseRerun", &passFilterHBHELooseRerun, &b_passFilterHBHELooseRerun);
-   fChain->SetBranchAddress("passFilterHBHETightRerun", &passFilterHBHETightRerun, &b_passFilterHBHETightRerun);
-   fChain->SetBranchAddress("passFilterHBHEIsoRerun", &passFilterHBHEIsoRerun, &b_passFilterHBHEIsoRerun);
+//   fChain->SetBranchAddress("passFilterHBHELooseRerun", &passFilterHBHELooseRerun, &b_passFilterHBHELooseRerun);
+//   fChain->SetBranchAddress("passFilterHBHETightRerun", &passFilterHBHETightRerun, &b_passFilterHBHETightRerun);
+//   fChain->SetBranchAddress("passFilterHBHEIsoRerun", &passFilterHBHEIsoRerun, &b_passFilterHBHEIsoRerun);
    fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
    fChain->SetBranchAddress("METPt", &METPt, &b_METPt);
    fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);

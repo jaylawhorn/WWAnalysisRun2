@@ -101,6 +101,9 @@ vector<double> generate_weights(TH1* data_npu_estimated, int isForSynch){
 
 int main (int argc, char** argv)
 { 
+
+  int t0 = time(NULL);
+
   std::string inputFolder = argv[1];
   std::string outputFile = argv[2];
   int isMC = atoi(argv[3]);
@@ -114,20 +117,22 @@ int main (int argc, char** argv)
   std::string jsonFileName = argv[11];
   int isLocal = atoi(argv[12]);
   
+//cout<<"\n\n>>>>>>>>>>>>>>>		Ramkrishna >>>>>>> "<<endl;
   float weight = std::atof(xSecWeight.c_str())/std::atof(numberOfEntries.c_str());
   if (strcmp(leptonName.c_str(),"el")!=0 && strcmp(leptonName.c_str(),"mu")!=0) {
     std::cout<<"Error: wrong lepton category"<<std::endl;
     return(-1);
   }
   
-  // std::string jsonFileName="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
+ //std::string jsonFileName="/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt";
+ jsonFileName="Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt";
   std::map<int, std::vector<std::pair<int, int> > > jsonMap;
   jsonMap = readJSONFile(jsonFileName);
   std::cout<<"JSON file: "<<jsonFileName<<std::endl;
 
   // define map with events                                                                                                                                     
   std::map<std::pair<int,std::pair<int,int> >,int> eventsMap;
-
+//
   //applyTrigger=false;
   std::cout<<"apply trigger: "<<applyTrigger<<std::endl;
 
@@ -161,10 +166,17 @@ int main (int argc, char** argv)
 
 
   char command1[3000];
-  sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
+  //cout<<"Ramkrishna "<<endl;
+  //exit(0);
+  //sprintf(command1, "xrd eoscms dirlist %s/%s/  | awk '{print \"root://eoscms.cern.ch/\"$5}' > listTemp_%s.txt", (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
+  //sprintf(command1,"find %s/%s/ -name \"*.root\" > listTemp_%s.txt",(inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
+  //sprintf(command1,"eos root://cmseos.fnal.gov ls %s/%s/ | awk '{print \"root://cmseos.fnal.gov\/%s/%s/\"$1}' > listTemp_%s.txt",(inputFolder).c_str(), (inputFile).c_str(), (inputFolder).c_str(), (inputFile).c_str(), outputFile.c_str());
+  //sprintf(command1,"xrdfsls %s/%s/ | awk '{print \"root://cmseos.fnal.gov/\"$1}' > listTemp_%s.txt",(inputFolder).c_str(), (inputFile).c_str(),  outputFile.c_str());
+  sprintf(command1,"xrdfs root://cmseos.fnal.gov ls %s/%s/ | awk '{print \"root://cmseos.fnal.gov/\"$1}' > listTemp_%s.txt",(inputFolder).c_str(), (inputFile).c_str(),  outputFile.c_str());
   std::cout<<command1<<std::endl;
   system(command1);
   char list1[2000];
+  //sprintf (list1, "InputRootFile_%s.dat", inputFile.c_str());
   sprintf (list1, "listTemp_%s.txt", outputFile.c_str());
   ifstream rootList (list1);
 
@@ -173,20 +185,26 @@ int main (int argc, char** argv)
   
   if (isLocal==1) {
     ReducedTree->fChain->Add("ReducedSelection.root");
+    cout<<" ====> Found local file."<<endl;
   }
   else {
     while (!rootList.eof())
     {
       char iRun_tW[700];
       rootList >> iRun_tW;
+      if(!rootList.good())break;
+      //cout<<"===> "<<iRun_tW<<endl;
       ReducedTree->fChain->Add(iRun_tW);
       fileCounter++;
     }
   }
   
-  std::cout<<"number of files found: "<<fileCounter-2<<std::endl;
+  std::cout<<"number of files found: "<<fileCounter<<std::endl;
   totalEntries=ReducedTree->fChain->GetEntries();
   std::cout<<"total entries: "<<totalEntries<<std::endl;
+  //exit(0);	//Just to see total number of entries
+  //cout<<"\n\n>>>>>>>>>>>>>>>		Ramkrishna >>>>>>> "<<endl;
+  //#if 0
   
   char command3[300];
   sprintf(command3, "rm listTemp_%s.txt", outputFile.c_str());
@@ -355,8 +373,7 @@ int main (int argc, char** argv)
 	if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"debug ele: "<<i<<std::endl;
 	if (applyTrigger==1)
 	  for (unsigned int t=0; t<ReducedTree->TriggerProducerTriggerNames->size(); t++)
-	    if(TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele27_eta2p1_WP75_Gsf_v") || 
-	       TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele27_eta2p1_WPLoose_Gsf_v") ||
+	    if(TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele27_eta2p1_WPLoose_Gsf_v") ||
 	       TString(ReducedTree->TriggerProducerTriggerNames->at(t)).Contains("HLT_Ele105_CaloIdVT_GsfTrkIdT_v") )
 	      if (ReducedTree->TriggerProducerTriggerPass->at(t)==1) passTrigger=1; //trigger
 	if (passTrigger==0 && applyTrigger==1) continue;
@@ -926,7 +943,7 @@ int main (int argc, char** argv)
       WWTree->PuppiAK8_jet_pt_so    = ReducedTree->PuppiAK8Jets_softDropPt[i];
       WWTree->PuppiAK8_jet_mass_pr  = ReducedTree->PuppiAK8Jets_prunedMass[i];
       WWTree->PuppiAK8_jet_mass_so  = (ReducedTree->PuppiAK8Jets_softDropMass[i]/ReducedTree->PuppiAK8Jets_PuppiAK8massCorrection[i])*getPUPPIweight(WWTree->ungroomed_PuppiAK8_jet_pt,WWTree->ungroomed_PuppiAK8_jet_eta, Puppisd_corrGEN, Puppisd_corrRECO_cen, Puppisd_corrRECO_for);
-//      WWTree->PuppiAK8_jet_mass_so  = ReducedTree->PuppiAK8Jets_softDropMass[i];
+      WWTree->PuppiAK8_jet_mass_so  = ReducedTree->PuppiAK8Jets_softDropMass[i];
       WWTree->PuppiAK8_jet_mass_tr  = ReducedTree->PuppiAK8Jets_trimmedMass[i];
       WWTree->PuppiAK8_jet_mass_fi  = ReducedTree->PuppiAK8Jets_filteredMass[i];
       WWTree->PuppiAK8_jet_tau2tau1 = ReducedTree->PuppiAK8Jets_tau2[i]/ReducedTree->PuppiAK8Jets_tau1[i];
@@ -1709,6 +1726,8 @@ int main (int argc, char** argv)
   ReducedTree->fChain->Delete();
   outTree->Write();
   outROOT->Close();
-
+  int t1 = time(NULL);
+  printf ("time to run this code = %d secs", t1 - t0);
+//#endif 
   return(0);
 }

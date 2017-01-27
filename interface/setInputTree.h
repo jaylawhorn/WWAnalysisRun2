@@ -39,9 +39,9 @@ public :
    Int_t           passFilterGlobalTightHalo2016;
    Int_t           passFilterBadChCand;
    Int_t           passFilterBadPFMuon;
-   Int_t           passFilterHBHELooseRerun;
-   Int_t           passFilterHBHETightRerun;
-   Int_t           passFilterHBHEIsoRerun;
+//   Int_t           passFilterHBHELooseRerun;
+//   Int_t           passFilterHBHETightRerun;
+//   Int_t           passFilterHBHEIsoRerun;
    Float_t         Weight;
    Double_t         METPt;
    Double_t         METPhi;
@@ -328,9 +328,9 @@ public :
    TBranch        *b_passFilterGlobalTightHalo2016;
    TBranch        *b_passFilterBadChCand;
    TBranch        *b_passFilterBadPFMuon;
-   TBranch        *b_passFilterHBHELooseRerun;   //!
-   TBranch        *b_passFilterHBHETightRerun;   //!
-   TBranch        *b_passFilterHBHEIsoRerun;   //!
+//   TBranch        *b_passFilterHBHELooseRerun;   //!
+//   TBranch        *b_passFilterHBHETightRerun;   //!
+//   TBranch        *b_passFilterHBHEIsoRerun;   //!
    TBranch        *b_Weight;   //!
    TBranch        *b_METPt;   //!
    TBranch        *b_METPhi;   //!
