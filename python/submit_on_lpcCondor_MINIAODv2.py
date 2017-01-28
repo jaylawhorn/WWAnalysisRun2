@@ -10,55 +10,25 @@ import subprocess
 currentDir = os.getcwd();
 CMSSWDir =  currentDir+"/../";
 
-#inputFolder = "/eos/cms/store/caf/user/lbrianza/WWReducedTree_run2";
 inputFolder = "/store/user/lnujj/WpWm_aQGC_Ntuples_Ram/FirstStepOutput/Jan102016";
 outputFolder = currentDir+"/output/";
 exeName = "produceWWNtuples.exe";
 exePathName = currentDir+"/"+exeName;
 
 dryRun = False;
-doMC = False;
-doData = True;
+doMC = True;
+doData = False;
 
 category = ["mu","el"];
 #category = ["el"];
 #category = ["mu"];
 
-#data_el_2016_runC_v1  data_mu_2016_runD_v1      Signal_LL       tWch           WJets1200      WJets400        WW_excl
-#data_el_2016_runE_v1  data_mu_2016_runE_v1      Signal_LT       tWch_bar       WJets1200ext1  WJets400ext1    WW_excl_amcatnlo
-#data_el_2016_runF_v1  data_mu_2016_runF_v1      Signal_TT       tWch_bar_ext1  WJets200       WJets600        WW_excl_ext1
-#data_el_2016_runG_v1  data_mu_2016_runG_v1      tch             tWch_ext1      WJets200ext1   WJets600ext1    WZ_excl_amcatnlo
-#data_el_2016_runH_v2  data_mu_2016_runH_v3      tch_bar         WJets100       WJets200ext2   WJets800ext1    ZZ_excl_amcatnlo
-#data_el_2016_runH_v3  DYJetsToLL_amcatnlo_ext1  TTbar_amcatnlo  WJets100ext1   WJets2500      WJets_amcatnlo
-#data_mu_2016_runB_v3  sch                       TTbar_powheg    WJets100ext2   WJets2500ext1  WJets_madgraph
-
-
 samples = [
-    ( 0.25973,		"Signal_LT",		2471400,	0.),
     ( 0.04130,		"Signal_LL",		499800,		0.),
+    ( 0.25973,		"Signal_LT",		2471400,	0.),
     ( 0.44750,		"Signal_TT",		4988000,	0.),
-    ( 49.9970,		"WW_excl",		1999200,	0.),
-    ( 49.9970,		"WW_excl_ext1",		6998600,	0.),
-    ( 49.9970,		"WW_excl_amcatnlo",	5176114,	0.),
-    ( 10.7100,		"WZ_excl_amcatnlo_2",	24221923,	0.),
-    ( 10.7100,		"WZ_excl_amcatnlo_1",	24221923,	0.),
-    ( 3.22000,		"ZZ_excl_amcatnlo",	15345572,	0.),
-    ( 3.36000,		"sch",			1000000,	0.),
-    ( 43.8000,		"tch_5",		67240808,	0.),
-    ( 43.8000,		"tch_4",		67240808,	0.),
-    ( 43.8000,		"tch_3",		67240808,	0.),
-    ( 43.8000,		"tch_2",		67240808,	0.),
-    ( 43.8000,		"tch_1",		67240808,	0.),
-    ( 26.0700,          "tch_bar_3",  		38811017,	0.),
-    ( 26.0700,          "tch_bar_2",  		38811017,	0.),
-    ( 26.0700,          "tch_bar_1",  		38811017,	0.),
-    ( 35.6000,		"tWch_ext1",		6952830,	0.),
-    ( 35.6000,		"tWch_bar_ext1",	6933094,	0.),
-    ( 831.760,		"TTbar_amcatnlo_4", 	23561608,    	0.),
-    ( 831.760,		"TTbar_amcatnlo_3", 	23561608,    	0.),
-    ( 831.760,		"TTbar_amcatnlo_2", 	23561608,    	0.),
-    ( 831.760,		"TTbar_amcatnlo_1", 	23561608,    	0.),
-    ( 831.760,		"TTbar_powheg", 	77229341,    	0.),
+    ( 61526.7,		"WJets_amcatnlo",	24120319,	0.),
+    ( 61526.7,		"WJets_madgraph",	29705748,	0.),
     ( 1627.45,       	"WJets100", 		10235198,    	0.),
     ( 1627.45,       	"WJets100ext1", 	29503700,    	0.),
     ( 1627.45,       	"WJets100ext2_2", 	39617787,    	0.),
@@ -74,7 +44,36 @@ samples = [
     ( 1.60809,       	"WJets1200", 		244532,    	0.),
     ( 1.60809,       	"WJets1200ext1", 	6627909,    	0.),
     ( 0.0389136,       	"WJets2500", 		253561,    	0.),
-    ( 0.0389136,       	"WJets2500ext1", 	2384260,    	0.)
+    ( 0.0389136,       	"WJets2500ext1", 	2384260,    	0.),
+    ( 49.9970,		"WW_excl_amcatnlo",	5176114,	0.),
+    ( 49.9970,		"WW_excl",		1999200,	0.),
+    ( 49.9970,		"WW_excl_ext1",		6998600,	0.),
+    ( 10.7100,		"WZ_excl_amcatnlo_2",	24221923,	0.),
+    ( 10.7100,		"WZ_excl_amcatnlo_1",	24221923,	0.),
+    ( 3.22000,		"ZZ_excl_amcatnlo",	15345572,	0.),
+    ( 831.760,		"TTbar_amcatnlo_4", 	23561608,    	0.),
+    ( 831.760,		"TTbar_amcatnlo_3", 	23561608,    	0.),
+    ( 831.760,		"TTbar_amcatnlo_2", 	23561608,    	0.),
+    ( 831.760,		"TTbar_amcatnlo_1", 	23561608,    	0.),
+    ( 831.760,		"TTbar_powheg_1", 	77229341,    	0.),
+    ( 831.760,		"TTbar_powheg_2", 	77229341,    	0.),
+    ( 831.760,		"TTbar_powheg_3", 	77229341,    	0.),
+    ( 831.760,		"TTbar_powheg_4", 	77229341,    	0.),
+    ( 11.3600,		"sch",			1000000,	0.),
+    ( 80.9500,          "tch_bar_3",  		38811017,	0.),
+    ( 80.9500,          "tch_bar_2",  		38811017,	0.),
+    ( 80.9500,          "tch_bar_1",  		38811017,	0.),
+    ( 136.0200,		"tch_5",		67240808,	0.),
+    ( 136.0200,		"tch_4",		67240808,	0.),
+    ( 136.0200,		"tch_3",		67240808,	0.),
+    ( 136.0200,		"tch_2",		67240808,	0.),
+    ( 136.0200,		"tch_1",		67240808,	0.),
+    ( 19.46741,		"tWch_bar",		5425134,	0.),
+    ( 19.46741,		"tWch_bar_ext1",	6933094,	0.),
+    ( 19.46741,		"tWch",			5372991,	0.),
+    ( 19.46741,		"tWch_ext1",		6952830,	0.),
+    ( 5765.40,		"DYJetsToLL_amcatnlo_ext1_1", 49144274, 	0.),
+    ( 5765.40,		"DYJetsToLL_amcatnlo_ext1_2", 49144274, 	0.)
     ]
 
 nameDataMu = [
@@ -241,7 +240,7 @@ nameDataEl = [
 ];
 
 
-inputlist="HLT_Ele27_WPLoose_eta2p1.root, MuonID_Z_RunBCD_prompt80X_7p65.root,MuonIso_Z_RunBCD_prompt80X_7p65.root, MuonTrackingEfficiencyratios.root,PU.root, PUxSynch.root, SingleElectron_csc2015.txt,SingleElectron_ecalscn1043093.txt,SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root, SingleMuon_csc2015.txt,SingleMuon_ecalscn1043093.txt, egammaEffi.txt_SF2D_GSF_tracking.root,egammaEffi.txt_SF2D_ID_ISO_RunB_0pt5fb.root,egammaEffi.txt_SF2D_ID_ISO_RunB_5pt0fb.root, ntupleList.txt,pileupDataRun2015D_72mb.root, pileupDataRun2016B_69mb.root,pileupDataRun2016B_71p3mb.root, pileupDataRun2016B_72mb.root, puppiJecCorr.root,python/produceWWNtuples.py,produceWWNtuples.exe, Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+inputlist="HLT_Ele27_WPLoose_eta2p1.root, MuonID_Z_RunBCD_prompt80X_7p65.root,MuonIso_Z_RunBCD_prompt80X_7p65.root, MuonTrackingEfficiencyratios.root,PU.root, PUxSynch.root, SingleElectron_csc2015.txt,SingleElectron_ecalscn1043093.txt,SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root, SingleMuon_csc2015.txt,SingleMuon_ecalscn1043093.txt, ntupleList.txt,pileupDataRun2015D_72mb.root, pileupDataRun2016B_69mb.root,pileupDataRun2016B_71p3mb.root, pileupDataRun2016B_72mb.root, puppiJecCorr.root,python/produceWWNtuples.py,produceWWNtuples.exe, Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 
 nameData = {"el": nameDataEl, "mu":nameDataMu};
 
