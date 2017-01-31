@@ -46,53 +46,76 @@ mv data_el_2016_runC_v1/ReducedSelection_9* data_el_2016_runC_v1_2/
 mv data_el_2016_runC_v1/ReducedSelection_8* data_el_2016_runC_v1_1/
 mv data_el_2016_runC_v1/ReducedSelection_* data_el_2016_runC_v1_1/
 
-mkdir data_el_2016_runF_v1_14
-mkdir data_el_2016_runF_v1_13
-mkdir data_el_2016_runF_v1_12
-mkdir data_el_2016_runF_v1_11
-mkdir data_el_2016_runF_v1_10
-mkdir data_el_2016_runF_v1_9
-mkdir data_el_2016_runF_v1_8
-mkdir data_el_2016_runF_v1_7
-mkdir data_el_2016_runF_v1_6
-mkdir data_el_2016_runF_v1_5
-mkdir data_el_2016_runF_v1_4
-mkdir data_el_2016_runF_v1_3
-mkdir data_el_2016_runF_v1_2
-mkdir data_el_2016_runF_v1_1
-mv data_el_2016_runF_v1/ReducedSelection_39* data_el_2016_runF_v1_14/
-mv data_el_2016_runF_v1/ReducedSelection_38* data_el_2016_runF_v1_14/
-mv data_el_2016_runF_v1/ReducedSelection_37* data_el_2016_runF_v1_14/
-mv data_el_2016_runF_v1/ReducedSelection_36* data_el_2016_runF_v1_14/
-mv data_el_2016_runF_v1/ReducedSelection_35* data_el_2016_runF_v1_14/
-mv data_el_2016_runF_v1/ReducedSelection_34* data_el_2016_runF_v1_14/
-mv data_el_2016_runF_v1/ReducedSelection_33* data_el_2016_runF_v1_14/
-mv data_el_2016_runF_v1/ReducedSelection_32* data_el_2016_runF_v1_13/
-mv data_el_2016_runF_v1/ReducedSelection_31* data_el_2016_runF_v1_13/
-mv data_el_2016_runF_v1/ReducedSelection_30* data_el_2016_runF_v1_12/
-mv data_el_2016_runF_v1/ReducedSelection_29* data_el_2016_runF_v1_12/
-mv data_el_2016_runF_v1/ReducedSelection_28* data_el_2016_runF_v1_11/
-mv data_el_2016_runF_v1/ReducedSelection_27* data_el_2016_runF_v1_11/
-mv data_el_2016_runF_v1/ReducedSelection_26* data_el_2016_runF_v1_10/
-mv data_el_2016_runF_v1/ReducedSelection_25* data_el_2016_runF_v1_10/
-mv data_el_2016_runF_v1/ReducedSelection_24* data_el_2016_runF_v1_9/
-mv data_el_2016_runF_v1/ReducedSelection_23* data_el_2016_runF_v1_9/
-mv data_el_2016_runF_v1/ReducedSelection_22* data_el_2016_runF_v1_8/
-mv data_el_2016_runF_v1/ReducedSelection_21* data_el_2016_runF_v1_8/
-mv data_el_2016_runF_v1/ReducedSelection_20* data_el_2016_runF_v1_7/
-mv data_el_2016_runF_v1/ReducedSelection_19* data_el_2016_runF_v1_7/
-mv data_el_2016_runF_v1/ReducedSelection_18* data_el_2016_runF_v1_6/
-mv data_el_2016_runF_v1/ReducedSelection_17* data_el_2016_runF_v1_6/
-mv data_el_2016_runF_v1/ReducedSelection_16* data_el_2016_runF_v1_5/
-mv data_el_2016_runF_v1/ReducedSelection_15* data_el_2016_runF_v1_5/
-mv data_el_2016_runF_v1/ReducedSelection_14* data_el_2016_runF_v1_4/
-mv data_el_2016_runF_v1/ReducedSelection_13* data_el_2016_runF_v1_4/
-mv data_el_2016_runF_v1/ReducedSelection_12* data_el_2016_runF_v1_3/
-mv data_el_2016_runF_v1/ReducedSelection_11* data_el_2016_runF_v1_3/
-mv data_el_2016_runF_v1/ReducedSelection_10* data_el_2016_runF_v1_2/
-mv data_el_2016_runF_v1/ReducedSelection_9* data_el_2016_runF_v1_2/
-mv data_el_2016_runF_v1/ReducedSelection_8* data_el_2016_runF_v1_1/
-mv data_el_2016_runF_v1/ReducedSelection_* data_el_2016_runF_v1_1/
+
+mkdir data_el_2016_runD_v1_12
+mkdir data_el_2016_runD_v1_11
+mkdir data_el_2016_runD_v1_10
+mkdir data_el_2016_runD_v1_9
+mkdir data_el_2016_runD_v1_8
+mkdir data_el_2016_runD_v1_7
+mkdir data_el_2016_runD_v1_6
+mkdir data_el_2016_runD_v1_5
+mkdir data_el_2016_runD_v1_4
+mkdir data_el_2016_runD_v1_3
+mkdir data_el_2016_runD_v1_2
+mkdir data_el_2016_runD_v1_1
+mv data_el_2016_runD_v1/ReducedSelection_58* data_el_2016_runD_v1_12/
+mv data_el_2016_runD_v1/ReducedSelection_57* data_el_2016_runD_v1_12/
+mv data_el_2016_runD_v1/ReducedSelection_56* data_el_2016_runD_v1_12/
+mv data_el_2016_runD_v1/ReducedSelection_55* data_el_2016_runD_v1_12/
+mv data_el_2016_runD_v1/ReducedSelection_54* data_el_2016_runD_v1_12/
+mv data_el_2016_runD_v1/ReducedSelection_53* data_el_2016_runD_v1_11/
+mv data_el_2016_runD_v1/ReducedSelection_52* data_el_2016_runD_v1_11/
+mv data_el_2016_runD_v1/ReducedSelection_51* data_el_2016_runD_v1_11/
+mv data_el_2016_runD_v1/ReducedSelection_50* data_el_2016_runD_v1_11/
+mv data_el_2016_runD_v1/ReducedSelection_49* data_el_2016_runD_v1_11/
+mv data_el_2016_runD_v1/ReducedSelection_48* data_el_2016_runD_v1_10/
+mv data_el_2016_runD_v1/ReducedSelection_47* data_el_2016_runD_v1_10/
+mv data_el_2016_runD_v1/ReducedSelection_46* data_el_2016_runD_v1_10/
+mv data_el_2016_runD_v1/ReducedSelection_45* data_el_2016_runD_v1_10/
+mv data_el_2016_runD_v1/ReducedSelection_44* data_el_2016_runD_v1_10/
+mv data_el_2016_runD_v1/ReducedSelection_43* data_el_2016_runD_v1_9/
+mv data_el_2016_runD_v1/ReducedSelection_42* data_el_2016_runD_v1_9/
+mv data_el_2016_runD_v1/ReducedSelection_41* data_el_2016_runD_v1_9/
+mv data_el_2016_runD_v1/ReducedSelection_40* data_el_2016_runD_v1_9/
+mv data_el_2016_runD_v1/ReducedSelection_39* data_el_2016_runD_v1_9/
+mv data_el_2016_runD_v1/ReducedSelection_38* data_el_2016_runD_v1_8/
+mv data_el_2016_runD_v1/ReducedSelection_37* data_el_2016_runD_v1_8/
+mv data_el_2016_runD_v1/ReducedSelection_36* data_el_2016_runD_v1_8/
+mv data_el_2016_runD_v1/ReducedSelection_35* data_el_2016_runD_v1_8/
+mv data_el_2016_runD_v1/ReducedSelection_34* data_el_2016_runD_v1_8/
+mv data_el_2016_runD_v1/ReducedSelection_33* data_el_2016_runD_v1_7/
+mv data_el_2016_runD_v1/ReducedSelection_32* data_el_2016_runD_v1_7/
+mv data_el_2016_runD_v1/ReducedSelection_31* data_el_2016_runD_v1_7/
+mv data_el_2016_runD_v1/ReducedSelection_30* data_el_2016_runD_v1_7/
+mv data_el_2016_runD_v1/ReducedSelection_29* data_el_2016_runD_v1_7/
+mv data_el_2016_runD_v1/ReducedSelection_28* data_el_2016_runD_v1_6/
+mv data_el_2016_runD_v1/ReducedSelection_27* data_el_2016_runD_v1_6/
+mv data_el_2016_runD_v1/ReducedSelection_26* data_el_2016_runD_v1_6/
+mv data_el_2016_runD_v1/ReducedSelection_25* data_el_2016_runD_v1_6/
+mv data_el_2016_runD_v1/ReducedSelection_24* data_el_2016_runD_v1_6/
+mv data_el_2016_runD_v1/ReducedSelection_23* data_el_2016_runD_v1_5/
+mv data_el_2016_runD_v1/ReducedSelection_22* data_el_2016_runD_v1_5/
+mv data_el_2016_runD_v1/ReducedSelection_21* data_el_2016_runD_v1_5/
+mv data_el_2016_runD_v1/ReducedSelection_20* data_el_2016_runD_v1_5/
+mv data_el_2016_runD_v1/ReducedSelection_19* data_el_2016_runD_v1_5/
+mv data_el_2016_runD_v1/ReducedSelection_18* data_el_2016_runD_v1_4/
+mv data_el_2016_runD_v1/ReducedSelection_17* data_el_2016_runD_v1_4/
+mv data_el_2016_runD_v1/ReducedSelection_16* data_el_2016_runD_v1_4/
+mv data_el_2016_runD_v1/ReducedSelection_15* data_el_2016_runD_v1_4/
+mv data_el_2016_runD_v1/ReducedSelection_14* data_el_2016_runD_v1_4/
+mv data_el_2016_runD_v1/ReducedSelection_13* data_el_2016_runD_v1_3/
+mv data_el_2016_runD_v1/ReducedSelection_12* data_el_2016_runD_v1_3/
+mv data_el_2016_runD_v1/ReducedSelection_11* data_el_2016_runD_v1_3/
+mv data_el_2016_runD_v1/ReducedSelection_10* data_el_2016_runD_v1_3/
+mv data_el_2016_runD_v1/ReducedSelection_9* data_el_2016_runD_v1_3/
+mv data_el_2016_runD_v1/ReducedSelection_8* data_el_2016_runD_v1_2/
+mv data_el_2016_runD_v1/ReducedSelection_7* data_el_2016_runD_v1_2/
+mv data_el_2016_runD_v1/ReducedSelection_6* data_el_2016_runD_v1_2/
+mv data_el_2016_runD_v1/ReducedSelection_5* data_el_2016_runD_v1_2/
+mv data_el_2016_runD_v1/ReducedSelection_4* data_el_2016_runD_v1_2/
+mv data_el_2016_runD_v1/ReducedSelection_* data_el_2016_runD_v1_1/
+
 
 mkdir data_el_2016_runF_v1_17
 mkdir data_el_2016_runF_v1_16
@@ -803,3 +826,42 @@ mv data_mu_2016_runG_v1/ReducedSelection_8* data_mu_2016_runG_v1_2/
 mv data_mu_2016_runG_v1/ReducedSelection_7* data_mu_2016_runG_v1_2/
 mv data_mu_2016_runG_v1/ReducedSelection_6* data_mu_2016_runG_v1_2/
 mv data_mu_2016_runG_v1/ReducedSelection_* data_mu_2016_runG_v1_1/
+
+mkdir data_mu_2016_runC_v1_7
+mkdir data_mu_2016_runC_v1_6
+mkdir data_mu_2016_runC_v1_5
+mkdir data_mu_2016_runC_v1_4
+mkdir data_mu_2016_runC_v1_3
+mkdir data_mu_2016_runC_v1_2
+mkdir data_mu_2016_runC_v1_1
+mv data_mu_2016_runC_v1/ReducedSelection_34* data_mu_2016_runC_v1_7/
+mv data_mu_2016_runC_v1/ReducedSelection_33* data_mu_2016_runC_v1_7/
+mv data_mu_2016_runC_v1/ReducedSelection_32* data_mu_2016_runC_v1_7/
+mv data_mu_2016_runC_v1/ReducedSelection_31* data_mu_2016_runC_v1_7/
+mv data_mu_2016_runC_v1/ReducedSelection_30* data_mu_2016_runC_v1_7/
+mv data_mu_2016_runC_v1/ReducedSelection_29* data_mu_2016_runC_v1_6/
+mv data_mu_2016_runC_v1/ReducedSelection_28* data_mu_2016_runC_v1_6/
+mv data_mu_2016_runC_v1/ReducedSelection_27* data_mu_2016_runC_v1_6/
+mv data_mu_2016_runC_v1/ReducedSelection_26* data_mu_2016_runC_v1_6/
+mv data_mu_2016_runC_v1/ReducedSelection_25* data_mu_2016_runC_v1_6/
+mv data_mu_2016_runC_v1/ReducedSelection_24* data_mu_2016_runC_v1_5/
+mv data_mu_2016_runC_v1/ReducedSelection_23* data_mu_2016_runC_v1_5/
+mv data_mu_2016_runC_v1/ReducedSelection_22* data_mu_2016_runC_v1_5/
+mv data_mu_2016_runC_v1/ReducedSelection_21* data_mu_2016_runC_v1_5/
+mv data_mu_2016_runC_v1/ReducedSelection_20* data_mu_2016_runC_v1_5/
+mv data_mu_2016_runC_v1/ReducedSelection_19* data_mu_2016_runC_v1_4/
+mv data_mu_2016_runC_v1/ReducedSelection_18* data_mu_2016_runC_v1_4/
+mv data_mu_2016_runC_v1/ReducedSelection_17* data_mu_2016_runC_v1_4/
+mv data_mu_2016_runC_v1/ReducedSelection_16* data_mu_2016_runC_v1_4/
+mv data_mu_2016_runC_v1/ReducedSelection_15* data_mu_2016_runC_v1_4/
+mv data_mu_2016_runC_v1/ReducedSelection_14* data_mu_2016_runC_v1_3/
+mv data_mu_2016_runC_v1/ReducedSelection_13* data_mu_2016_runC_v1_3/
+mv data_mu_2016_runC_v1/ReducedSelection_12* data_mu_2016_runC_v1_3/
+mv data_mu_2016_runC_v1/ReducedSelection_11* data_mu_2016_runC_v1_3/
+mv data_mu_2016_runC_v1/ReducedSelection_10* data_mu_2016_runC_v1_3/
+mv data_mu_2016_runC_v1/ReducedSelection_9* data_mu_2016_runC_v1_2/
+mv data_mu_2016_runC_v1/ReducedSelection_8* data_mu_2016_runC_v1_2/
+mv data_mu_2016_runC_v1/ReducedSelection_7* data_mu_2016_runC_v1_2/
+mv data_mu_2016_runC_v1/ReducedSelection_6* data_mu_2016_runC_v1_2/
+mv data_mu_2016_runC_v1/ReducedSelection_5* data_mu_2016_runC_v1_2/
+mv data_mu_2016_runC_v1/ReducedSelection_* data_mu_2016_runC_v1_1/

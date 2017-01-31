@@ -16,8 +16,8 @@ exeName = "produceWWNtuples.exe";
 exePathName = currentDir+"/"+exeName;
 
 dryRun = False;
-doMC = True;
-doData = False;
+doMC = False;
+doData = True;
 
 category = ["mu","el"];
 #category = ["el"];
@@ -240,7 +240,7 @@ nameDataEl = [
 ];
 
 
-inputlist="HLT_Ele27_WPLoose_eta2p1.root, MuonID_Z_RunBCD_prompt80X_7p65.root,MuonIso_Z_RunBCD_prompt80X_7p65.root, MuonTrackingEfficiencyratios.root,PU.root, PUxSynch.root, SingleElectron_csc2015.txt,SingleElectron_ecalscn1043093.txt,SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root, SingleMuon_csc2015.txt,SingleMuon_ecalscn1043093.txt, ntupleList.txt,pileupDataRun2015D_72mb.root, pileupDataRun2016B_69mb.root,pileupDataRun2016B_71p3mb.root, pileupDataRun2016B_72mb.root, puppiJecCorr.root,python/produceWWNtuples.py,produceWWNtuples.exe, Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+inputlist="PU.root, PUxSynch.root, SingleElectron_csc2015.txt,SingleElectron_ecalscn1043093.txt, SingleMuon_csc2015.txt,SingleMuon_ecalscn1043093.txt, ntupleList.txt,pileupDataRun2015D_72mb.root, pileupDataRun2016B_69mb.root,pileupDataRun2016B_71p3mb.root, pileupDataRun2016B_72mb.root, puppiJecCorr.root,python/produceWWNtuples.py,produceWWNtuples.exe, Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 
 nameData = {"el": nameDataEl, "mu":nameDataMu};
 

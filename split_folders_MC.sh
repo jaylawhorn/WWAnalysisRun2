@@ -39,3 +39,19 @@ mv WZ_excl_amcatnlo/ReducedSelection_5* WZ_excl_amcatnlo_2/
 mv WZ_excl_amcatnlo/ReducedSelection_4* WZ_excl_amcatnlo_2/
 mv WZ_excl_amcatnlo/ReducedSelection_3* WZ_excl_amcatnlo_2/
 mv WZ_excl_amcatnlo/ReducedSelection_* WZ_excl_amcatnlo_1/
+mkdir DYJetsToLL_amcatnlo_ext1_2
+mkdir DYJetsToLL_amcatnlo_ext1_1
+mv DYJetsToLL_amcatnlo_ext1/ReducedSelection_3* DYJetsToLL_amcatnlo_ext1_2/
+mv DYJetsToLL_amcatnlo_ext1/ReducedSelection_2* DYJetsToLL_amcatnlo_ext1_2/
+mv DYJetsToLL_amcatnlo_ext1/ReducedSelection_* DYJetsToLL_amcatnlo_ext1_1/
+mkdir TTbar_powheg_4
+mkdir TTbar_powheg_3
+mkdir TTbar_powheg_2
+mkdir TTbar_powheg_1
+mv TTbar_powheg/ReducedSelection_8* TTbar_powheg_4/
+mv TTbar_powheg/ReducedSelection_7* TTbar_powheg_4/
+mv TTbar_powheg/ReducedSelection_6* TTbar_powheg_3/
+mv TTbar_powheg/ReducedSelection_5* TTbar_powheg_3/
+mv TTbar_powheg/ReducedSelection_4* TTbar_powheg_2/
+mv TTbar_powheg/ReducedSelection_3* TTbar_powheg_2/
+mv TTbar_powheg/ReducedSelection_* TTbar_powheg_1/
