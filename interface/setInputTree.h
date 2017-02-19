@@ -73,6 +73,7 @@ public :
    Float_t         GenBosonTLorentzVector[30];   //[GenBosonNum]
    Int_t           GenBoson_GenBosonPDGId[30];   //[GenBosonNum]
    Int_t           GenBoson_isBosonLeptonic[30];   //[GenBosonNum]
+   Int_t           GenBoson_isBosonHadronic[30];   //[GenBosonNum]
    UShort_t        GenMuNum;
    Float_t         GenMuPt[30];   //[GenMuNum]
    Float_t         GenMuEta[30];   //[GenMuNum]
@@ -362,6 +363,7 @@ public :
    TBranch        *b_GenBosonTLorentzVector;   //!
    TBranch        *b_GenBoson_GenBosonPDGId;   //!
    TBranch        *b_GenBoson_isBosonLeptonic;   //!
+   TBranch        *b_GenBoson_isBosonHadronic;   //!
    TBranch        *b_GenMuNum;   //!
    TBranch        *b_GenMuPt;   //!
    TBranch        *b_GenMuEta;   //!

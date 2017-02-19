@@ -110,6 +110,7 @@ void setInputTree::Init()
    fChain->SetBranchAddress("GenBosonTLorentzVector", GenBosonTLorentzVector, &b_GenBosonTLorentzVector);
    fChain->SetBranchAddress("GenBoson_GenBosonPDGId", GenBoson_GenBosonPDGId, &b_GenBoson_GenBosonPDGId);
    fChain->SetBranchAddress("GenBoson_isBosonLeptonic", GenBoson_isBosonLeptonic, &b_GenBoson_isBosonLeptonic);
+   fChain->SetBranchAddress("GenBoson_isBosonHadronic", GenBoson_isBosonHadronic, &b_GenBoson_isBosonHadronic);
    fChain->SetBranchAddress("GenMuNum", &GenMuNum, &b_GenMuNum);
    fChain->SetBranchAddress("GenMuPt", GenMuPt, &b_GenMuPt);
    fChain->SetBranchAddress("GenMuEta", GenMuEta, &b_GenMuEta);

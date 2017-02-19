@@ -252,12 +252,13 @@ int main (int argc, char** argv)
   badEventsFile.close();
 
   int nNegEvents=0; 
-  int nEvents=0;
+  int nEvents=0;	nEvents=ReducedTree->fChain->GetEntries();
   Long64_t jentry2=0;
+
   
   //---------start loop on events------------
   std::cout << "---------start loop on events------------" << std::endl;
-  //for (Long64_t jentry=0; jentry<198;jentry++,jentry2++)
+  //for (Long64_t jentry=0; jentry<1198;jentry++,jentry2++)
   for (Long64_t jentry=0; jentry<ReducedTree->fChain->GetEntries();jentry++,jentry2++)
   {
     //for (Long64_t jentry=531000; jentry<532000;jentry++,jentry2++) {
@@ -1570,30 +1571,41 @@ int main (int argc, char** argv)
 	int posWhad =-1, posWlep =-1, posGenJet=-1;
 	//	std::cout<<"entry: "<<iEntry<<" "<<GenNuNum<<std::endl;
 	double deltaPhiOld=100.;
-	WWTree->genGravMass=100.;	
+	double tempMass = 100.0;
 
+	genMass = 80.385;
+	//cout<<"====================== NBoson = "<<ReducedTree->GenBosonNum<<"\n"<<endl;
+	//cout<<"Ele = "<<ReducedTree->GenElecNum<<"\tMu = "<<ReducedTree->GenMuNum<<endl;
 	bool foundLeptonicW = false;
-
+	int CountLeptonicW=0, CountHadronicW=0;
+	bool foundHadronicW = false;
+	if (ReducedTree->GenBosonNum > 2)
+	{
+		cout<<"Warning: There are more than two w-bosons"<<endl;
+		for (int i=0; i<ReducedTree->GenBosonNum; i++) {
+		   cout<<"Event No. "<<jentry<<"\tWLep Found:"<<"\tPDGID = "<<ReducedTree->GenBoson_GenBosonPDGId[i]<<"\tpos = "<<i<<"\tisLeptonic = "<<ReducedTree->GenBoson_isBosonLeptonic[i]<<endl;
+		}
+	}
 	for (int i=0; i<ReducedTree->GenBosonNum; i++) {
-	  if (ReducedTree->GenBoson_isBosonLeptonic[i]==1) {
+	  if (ReducedTree->GenBoson_isBosonLeptonic[i]==1)
+	  		CountLeptonicW++;
+	  if (ReducedTree->GenBoson_isBosonHadronic[i]==1)
+	  		CountHadronicW++;
+	}
+	for (int i=0; i<ReducedTree->GenBosonNum; i++) {
+	  if (ReducedTree->GenBoson_isBosonLeptonic[i]==1 && CountLeptonicW==1) {
 	    lepW.SetPtEtaPhiE(ReducedTree->GenBosonPt[i],ReducedTree->GenBosonEta[i],ReducedTree->GenBosonPhi[i],ReducedTree->GenBosonE[i]);
 	    foundLeptonicW = true;
 	    posWlep = i;
 	  }
-	  if (foundLeptonicW) break;
+	  if (ReducedTree->GenBoson_isBosonHadronic[i]==1 && CountHadronicW==1) {
+	    hadW.SetPtEtaPhiE(ReducedTree->GenBosonPt[i],ReducedTree->GenBosonEta[i],ReducedTree->GenBosonPhi[i],ReducedTree->GenBosonE[i]);
+	    foundHadronicW = true;
+	    posWhad = i;
+	  }
+	  //if (foundLeptonicW) break;
 	}
 	
-	for (int i=0; i<ReducedTree->GenBosonNum; i++) {
-
-	    hadW.SetPtEtaPhiE(ReducedTree->GenBosonPt[i],ReducedTree->GenBosonEta[i],ReducedTree->GenBosonPhi[i],ReducedTree->GenBosonE[i]);
-
-	    if (fabs((hadW+lepW).M()-genMass)< fabs(WWTree->genGravMass-genMass)) { //found the gen graviton
-	      WWTree->genGravMass=(hadW+lepW).M();	
-	      posWhad=i; //save positions of the hadronic W
-	    }
-
-	  }	
-
 	if (posWhad!=-1 && posWlep!=-1) {
 
 	  float oldDR=100.;
@@ -1630,6 +1642,10 @@ int main (int argc, char** argv)
 	  WWTree->lepW_phi_gen = ReducedTree->GenBosonPhi[posWlep];
 	  WWTree->lepW_e_gen = ReducedTree->GenBosonE[posWlep];
 	  WWTree->lepW_m_gen = lepW.M();
+
+	  WWTree->WW_mass_gen = (hadW+lepW).M();
+	  WWTree->WW_mT_gen = (hadW+lepW).Mt();
+	  WWTree->WW_pT_gen = (hadW+lepW).Pt();
 
 	  WWTree->AK8_pt_gen = ReducedTree->GenJetsAK8Pt[posGenJet];
 	  WWTree->AK8_eta_gen = ReducedTree->GenJetsAK8Eta[posGenJet];
@@ -1696,7 +1712,7 @@ int main (int argc, char** argv)
     if (isBadEvent) continue;
     
     //    WWTree->wSampleWeight = std::atof(xSecWeight.c_str())/nEvents; //xsec/numberOfEntries
-    WWTree->nEvents = nEvents-nNegEvents;
+    WWTree->nEvents = nEvents;
     WWTree->nNegEvents = nNegEvents;
     
     
@@ -1728,7 +1744,7 @@ int main (int argc, char** argv)
   outTree->Write();
   outROOT->Close();
   int t1 = time(NULL);
-  printf ("time to run this code = %d secs", t1 - t0);
+  printf ("time to run this code = %d secs\n", t1 - t0);
 //#endif 
   return(0);
 }

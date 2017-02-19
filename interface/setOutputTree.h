@@ -77,7 +77,6 @@ class setOutputTree {
   float jet_pt_so;
   float jet_mass_tr;
   float jet_mass_fi;
-  float jet_mass;
   float jet_tau2tau1;
   float AK4_jetjet_pt;
   float AK4_jetjet_mass;
@@ -160,7 +159,6 @@ class setOutputTree {
   float W_pt_gen;
   float W_pz_gen;
   float W_rap_gen;
-  float genGravMass;
   float nu_pz_gen;
   float nu_pt_gen;
   float nu_phi_gen;
@@ -175,6 +173,9 @@ class setOutputTree {
   float lepW_phi_gen;
   float lepW_e_gen;
   float lepW_m_gen;
+  float WW_mass_gen;
+  float WW_mT_gen;
+  float WW_pT_gen;
   float AK8_pt_gen;
   float AK8_eta_gen;
   float AK8_phi_gen;
@@ -295,18 +296,18 @@ class setOutputTree {
   float deltaR_AK8_closestBtagJet;
   float deltaR_AK8_closestBtagJet_loose;
   float vbf_maxpt_deltaR;
-  float AK4_1_pt_gen;
-  float AK4_1_eta_gen;
-  float AK4_1_phi_gen;
-  float AK4_1_e_gen;
-  float AK4_1_mass_gen;
-  float AK4_2_pt_gen;
-  float AK4_2_eta_gen;
-  float AK4_2_phi_gen;
-  float AK4_2_e_gen;
-  float AK4_2_mass_gen;
-  float AK4_BIG_gen_mass;
-  float deltaR_AK4;
+//  float AK4_1_pt_gen;
+//  float AK4_1_eta_gen;
+//  float AK4_1_phi_gen;
+//  float AK4_1_e_gen;
+//  float AK4_1_mass_gen;
+//  float AK4_2_pt_gen;
+//  float AK4_2_eta_gen;
+//  float AK4_2_phi_gen;
+//  float AK4_2_e_gen;
+//  float AK4_2_mass_gen;
+//  float AK4_BIG_gen_mass;
+//  float deltaR_AK4;
 
   setOutputTree(TTree* outputTree);
   //  setOutputTree(TTree *outputTree=0);

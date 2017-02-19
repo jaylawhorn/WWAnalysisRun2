@@ -63,7 +63,6 @@ void setOutputTree::initializeVariables()
   W_pt_gen=-999;
   W_pz_gen=-999;
   W_rap_gen=-999;
-  genGravMass=-999;
   nu_pz_gen=-999;
   nu_pt_gen=-999;
   nu_phi_gen=-999;
@@ -78,6 +77,9 @@ void setOutputTree::initializeVariables()
   lepW_phi_gen=-999;
   lepW_e_gen=-999;
   lepW_m_gen=-999;
+  WW_mass_gen=-999.0;
+  WW_mT_gen=-999.0;
+  WW_pT_gen=-999.0;
   AK8_pt_gen=-999;
   AK8_eta_gen=-999;
   AK8_phi_gen=-999;
@@ -164,7 +166,6 @@ void setOutputTree::initializeVariables()
   jet_pt_so=-999;
   jet_mass_tr=-999;
   jet_mass_fi=-999;
-  jet_mass=-999;
   jet_tau2tau1=-999;
   AK4_jetjet_pt=-999;
   AK4_jetjet_mass=-999;
@@ -297,18 +298,18 @@ void setOutputTree::initializeVariables()
   deltaR_AK8_closestBtagJet=0;
   deltaR_AK8_closestBtagJet_loose=0;
   vbf_maxpt_deltaR =-999;
-  AK4_1_pt_gen=-999;
-  AK4_1_eta_gen=-999;
-  AK4_1_phi_gen=-999;
-  AK4_1_e_gen=-999;
-  AK4_1_mass_gen=-999;
-  AK4_2_pt_gen=-999;
-  AK4_2_eta_gen=-999;
-  AK4_2_phi_gen=-999;
-  AK4_2_e_gen=-999;
-  AK4_2_mass_gen=-999;
-  AK4_BIG_gen_mass=-999;
-  deltaR_AK4=-999;
+//  AK4_1_pt_gen=-999;
+//  AK4_1_eta_gen=-999;
+//  AK4_1_phi_gen=-999;
+//  AK4_1_e_gen=-999;
+//  AK4_1_mass_gen=-999;
+//  AK4_2_pt_gen=-999;
+//  AK4_2_eta_gen=-999;
+//  AK4_2_phi_gen=-999;
+//  AK4_2_e_gen=-999;
+//  AK4_2_mass_gen=-999;
+//  AK4_BIG_gen_mass=-999;
+//  deltaR_AK4=-999;
 
 }
 
@@ -381,7 +382,6 @@ void setOutputTree::setBranches()
   fTree->Branch("jet_pt_so",&jet_pt_so,"jet_pt_so");
   fTree->Branch("jet_mass_tr",&jet_mass_tr,"jet_mass_tr");
   fTree->Branch("jet_mass_fi",&jet_mass_fi,"jet_mass_fi");
-  fTree->Branch("jet_mass",&jet_mass,"jet_mass");
   fTree->Branch("jet_tau2tau1",&jet_tau2tau1,"jet_tau2tau1");
   fTree->Branch("AK4_jetjet_pt",&AK4_jetjet_pt,"AK4_jetjet_pt");
   fTree->Branch("AK4_jetjet_mass",&AK4_jetjet_mass,"AK4_jetjet_mass");
@@ -464,7 +464,6 @@ void setOutputTree::setBranches()
   fTree->Branch("W_pt_gen",&W_pt_gen,"W_pt_gen");
   fTree->Branch("W_pz_gen",&W_pz_gen,"W_pz_gen");
   fTree->Branch("W_rap_gen",&W_rap_gen,"W_rap_gen");
-  fTree->Branch("genGravMass",&genGravMass,"genGravMass");
   fTree->Branch("nu_pz_gen",&nu_pz_gen,"nu_pz_gen");
   fTree->Branch("nu_pt_gen",&nu_pt_gen,"nu_pt_gen");
   fTree->Branch("nu_phi_gen",&nu_phi_gen,"nu_phi_gen");
@@ -479,6 +478,9 @@ void setOutputTree::setBranches()
   fTree->Branch("lepW_phi_gen",&lepW_phi_gen,"lepW_phi_gen");
   fTree->Branch("lepW_e_gen",&lepW_e_gen,"lepW_e_gen");
   fTree->Branch("lepW_m_gen",&lepW_m_gen,"lepW_m_gen");
+  fTree->Branch("WW_mass_gen",&WW_mass_gen,"WW_mass_gen");
+  fTree->Branch("WW_mT_gen",&WW_mT_gen,"WW_mT_gen");
+  fTree->Branch("WW_pT_gen",&WW_pT_gen,"WW_pT_gen");
   fTree->Branch("AK8_pt_gen",&AK8_pt_gen,"AK8_pt_gen");
   fTree->Branch("AK8_eta_gen",&AK8_eta_gen,"AK8_eta_gen");
   fTree->Branch("AK8_phi_gen",&AK8_phi_gen,"AK8_phi_gen");
@@ -600,16 +602,16 @@ void setOutputTree::setBranches()
   fTree->Branch("deltaR_AK8_closestBtagJet_loose",&deltaR_AK8_closestBtagJet_loose,"deltaR_AK8_closestBtagJet_loose/F");
   fTree->Branch("vbf_maxpt_deltaR",&vbf_maxpt_deltaR,"vbf_maxpt_deltaR/F");
 
-  fTree->Branch("AK4_1_pt_gen",&AK4_1_pt_gen,"AK4_1_pt_gen/F");
-  fTree->Branch("AK4_1_eta_gen",&AK4_1_eta_gen,"AK4_1_eta_gen/F");
-  fTree->Branch("AK4_1_phi_gen",&AK4_1_phi_gen,"AK4_1_phi_gen/F");
-  fTree->Branch("AK4_1_e_gen",&AK4_1_e_gen,"AK4_1_e_gen/F");
-  fTree->Branch("AK4_1_mass_gen",&AK4_1_mass_gen,"AK4_1_mass_gen/F");
-  fTree->Branch("AK4_2_pt_gen",&AK4_2_pt_gen,"AK4_2_pt_gen/F");
-  fTree->Branch("AK4_2_eta_gen",&AK4_2_eta_gen,"AK4_2_eta_gen/F");
-  fTree->Branch("AK4_2_phi_gen",&AK4_2_phi_gen,"AK4_2_phi_gen/F");
-  fTree->Branch("AK4_2_e_gen",&AK4_2_e_gen,"AK4_2_e_gen/F");
-  fTree->Branch("AK4_2_mass_gen",&AK4_2_mass_gen,"AK4_2_mass_gen/F");
-  fTree->Branch("AK4_BIG_gen_mass",&AK4_BIG_gen_mass,"AK4_BIG_gen_mass/F");
-  fTree->Branch("deltaR_AK4",&deltaR_AK4,"deltaR_AK4/F");
+//  fTree->Branch("AK4_1_pt_gen",&AK4_1_pt_gen,"AK4_1_pt_gen/F");
+//  fTree->Branch("AK4_1_eta_gen",&AK4_1_eta_gen,"AK4_1_eta_gen/F");
+//  fTree->Branch("AK4_1_phi_gen",&AK4_1_phi_gen,"AK4_1_phi_gen/F");
+//  fTree->Branch("AK4_1_e_gen",&AK4_1_e_gen,"AK4_1_e_gen/F");
+//  fTree->Branch("AK4_1_mass_gen",&AK4_1_mass_gen,"AK4_1_mass_gen/F");
+//  fTree->Branch("AK4_2_pt_gen",&AK4_2_pt_gen,"AK4_2_pt_gen/F");
+//  fTree->Branch("AK4_2_eta_gen",&AK4_2_eta_gen,"AK4_2_eta_gen/F");
+//  fTree->Branch("AK4_2_phi_gen",&AK4_2_phi_gen,"AK4_2_phi_gen/F");
+//  fTree->Branch("AK4_2_e_gen",&AK4_2_e_gen,"AK4_2_e_gen/F");
+//  fTree->Branch("AK4_2_mass_gen",&AK4_2_mass_gen,"AK4_2_mass_gen/F");
+//  fTree->Branch("AK4_BIG_gen_mass",&AK4_BIG_gen_mass,"AK4_BIG_gen_mass/F");
+//  fTree->Branch("deltaR_AK4",&deltaR_AK4,"deltaR_AK4/F");
 }
