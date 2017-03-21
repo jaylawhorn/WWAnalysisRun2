@@ -121,6 +121,12 @@ void setOutputTree::initializeVariables()
   mass_lvj_type0_PuppiAK8=-999;
   mass_lvj_type2_PuppiAK8=-999;
   mass_lvj_run2_PuppiAK8=-999;
+  mt_lvj_type0_PuppiAK8=-999;
+  mt_lvj_type2_PuppiAK8=-999;
+  mt_lvj_run2_PuppiAK8=-999;
+  pt_lvj_type0_PuppiAK8=-999;
+  pt_lvj_type2_PuppiAK8=-999;
+  pt_lvj_run2_PuppiAK8=-999;
   mass_lvjj_type0_AK4=-999;
   mass_lvjj_type0_met_jes_up_AK4=-999;
   mass_lvjj_type0_met_jes_dn_AK4=-999;
@@ -298,6 +304,10 @@ void setOutputTree::initializeVariables()
   deltaR_AK8_closestBtagJet=0;
   deltaR_AK8_closestBtagJet_loose=0;
   vbf_maxpt_deltaR =-999;
+  costheta1=-999;
+  costhetastar=-999;
+  phi1=-999;
+  VBSCentrality=-999;
 //  AK4_1_pt_gen=-999;
 //  AK4_1_eta_gen=-999;
 //  AK4_1_phi_gen=-999;
@@ -522,6 +532,12 @@ void setOutputTree::setBranches()
   fTree->Branch("mass_lvj_type0_PuppiAK8",&mass_lvj_type0_PuppiAK8,"mass_lvj_type0_PuppiAK8/F");
   fTree->Branch("mass_lvj_type2_PuppiAK8",&mass_lvj_type2_PuppiAK8,"mass_lvj_type2_PuppiAK8/F");
   fTree->Branch("mass_lvj_run2_PuppiAK8",&mass_lvj_run2_PuppiAK8,"mass_lvj_run2_PuppiAK8/F");
+  fTree->Branch("mt_lvj_type0_PuppiAK8",&mt_lvj_type0_PuppiAK8,"mt_lvj_type0_PuppiAK8/F");
+  fTree->Branch("mt_lvj_type2_PuppiAK8",&mt_lvj_type2_PuppiAK8,"mt_lvj_type2_PuppiAK8/F");
+  fTree->Branch("mt_lvj_run2_PuppiAK8", &mt_lvj_run2_PuppiAK8, "mt_lvj_run2_PuppiAK8/F");
+  fTree->Branch("pt_lvj_type0_PuppiAK8",&pt_lvj_type0_PuppiAK8,"pt_lvj_type0_PuppiAK8/F");
+  fTree->Branch("pt_lvj_type2_PuppiAK8",&pt_lvj_type2_PuppiAK8,"pt_lvj_type2_PuppiAK8/F");
+  fTree->Branch("pt_lvj_run2_PuppiAK8", &pt_lvj_run2_PuppiAK8, "pt_lvj_run2_PuppiAK8/F");
   fTree->Branch("mass_lvjj_type0_AK4",&mass_lvjj_type0_AK4,"mass_lvjj_type0_AK4/F");
   fTree->Branch("mass_lvjj_type0_met_jes_up_AK4",&mass_lvjj_type0_met_jes_up_AK4,"mass_lvjj_type0_met_jes_up_AK4/F");
   fTree->Branch("mass_lvjj_type0_met_jes_dn_AK4",&mass_lvjj_type0_met_jes_dn_AK4,"mass_lvjj_type0_met_jes_dn_AK4/F");
@@ -601,6 +617,10 @@ void setOutputTree::setBranches()
   fTree->Branch("deltaR_AK8_closestBtagJet",&deltaR_AK8_closestBtagJet,"deltaR_AK8_closestBtagJet/F");
   fTree->Branch("deltaR_AK8_closestBtagJet_loose",&deltaR_AK8_closestBtagJet_loose,"deltaR_AK8_closestBtagJet_loose/F");
   fTree->Branch("vbf_maxpt_deltaR",&vbf_maxpt_deltaR,"vbf_maxpt_deltaR/F");
+  fTree->Branch("costheta1",&costheta1 ,"costheta1/F");
+  fTree->Branch("costhetastar",&costhetastar ,"costhetastar/F");
+  fTree->Branch("phi1",&phi1 ,"phi1/F");
+  fTree->Branch("VBSCentrality",&VBSCentrality ,"VBSCentrality/F");
 
 //  fTree->Branch("AK4_1_pt_gen",&AK4_1_pt_gen,"AK4_1_pt_gen/F");
 //  fTree->Branch("AK4_1_eta_gen",&AK4_1_eta_gen,"AK4_1_eta_gen/F");

@@ -34,6 +34,9 @@
 #include "../interface/readJSONFile.h"
 
 using namespace std;
+void computeAngles(TLorentzVector thep4H, TLorentzVector thep4Z1, TLorentzVector thep4M11, TLorentzVector thep4M12, 
+					  TLorentzVector thep4Z2, 
+		  double& costheta1,  double& costhetastar, double& Phi1);
 
 float getPUPPIweight(float puppipt, float puppieta, TF1* puppisd_corrGEN, TF1* puppisd_corrRECO_cen, TF1* puppisd_corrRECO_for ){
 
@@ -142,6 +145,7 @@ int main (int argc, char** argv)
   TLorentzVector PuppiAK4_JET2_jes_up, PuppiAK4_JET2_jes_dn;
   TLorentzVector VBF1,VBF2,TOT;
   TLorentzVector ELE,MU;
+
   
   std::vector<TLorentzVector> tightMuon;
   std::vector<TLorentzVector> looseMuon;
@@ -1232,6 +1236,12 @@ int main (int argc, char** argv)
     WWTree->mass_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).M();
     WWTree->mass_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).M();
     WWTree->mass_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).M();
+    WWTree->mt_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).Mt();
+    WWTree->mt_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).Mt();
+    WWTree->mt_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).Mt();
+    WWTree->pt_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).Pt();
+    WWTree->pt_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).Pt();
+    WWTree->pt_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).Pt();
     WWTree->mass_lvj_type0_met_PuppiAK8_jes_up = (LEP + NU0_jes_up + JET_PuppiAK8_jes_up).M();
     WWTree->mass_lvj_type0_met_PuppiAK8_jes_dn = (LEP + NU0_jes_dn + JET_PuppiAK8_jes_dn).M();
     
@@ -1714,7 +1724,14 @@ int main (int argc, char** argv)
     //    WWTree->wSampleWeight = std::atof(xSecWeight.c_str())/nEvents; //xsec/numberOfEntries
     WWTree->nEvents = nEvents;
     WWTree->nNegEvents = nNegEvents;
-    
+
+    double a_costheta1, a_costheta2, a_costhetastar, a_Phi, a_Phi1;
+    computeAngles( LEP + NU0_puppi + JET_PuppiAK8, LEP + NU0_puppi, LEP, NU0_puppi, JET_PuppiAK8,  a_costheta1, a_costhetastar, a_Phi1);
+    WWTree->costheta1 = (float) a_costheta1;                
+    WWTree->costhetastar = (float) a_costhetastar;
+    WWTree->phi1 = (float) a_Phi1;
+    WWTree->VBSCentrality = (fabs(VBF1.Rapidity()- (((LEP + NU0_puppi).Rapidity()+JET_PuppiAK8.Rapidity())/2.0)- VBF2.Rapidity() ))/fabs(VBF1.Rapidity() - VBF2.Rapidity());
+
     
     /////////////////FILL THE TREE
     if(WWTree->event==evento && WWTree->run==runno && WWTree->lumi==lumo) std::cout<<"fill: "<<count<<std::endl; count++;
@@ -1747,4 +1764,109 @@ int main (int argc, char** argv)
   printf ("time to run this code = %d secs\n", t1 - t0);
 //#endif 
   return(0);
+}
+
+
+//////////////////////////////////
+//Ref: https://github.com/ram1123/LHEAnalyzer/blob/LHEanalyzer/LHEanalyzer.cpp
+//////////////////////////////////
+
+void computeAngles(TLorentzVector thep4H, TLorentzVector thep4Z1, TLorentzVector thep4M11, TLorentzVector thep4M12, 
+					  TLorentzVector thep4Z2, 
+		  double& costheta1,  double& costhetastar, double& Phi1)
+{
+    ///////////////////////////////////////////////
+    // check for z1/z2 convention, redefine all 4 vectors with convention
+    ///////////////////////////////////////////////	
+    TLorentzVector p4H, p4Z1, p4M11, p4M12, p4Z2;
+    p4H = thep4H;
+    
+    p4Z1 = thep4Z1; p4M11 = thep4M11; p4M12 = thep4M12;
+    p4Z2 = thep4Z2;
+    //// costhetastar
+	TVector3 boostX = -(thep4H.BoostVector());
+	TLorentzVector thep4Z1inXFrame( p4Z1 );
+	TLorentzVector thep4Z2inXFrame( p4Z2 );	
+	thep4Z1inXFrame.Boost( boostX );
+	thep4Z2inXFrame.Boost( boostX );
+	TVector3 theZ1X_p3 = TVector3( thep4Z1inXFrame.X(), thep4Z1inXFrame.Y(), thep4Z1inXFrame.Z() );
+	TVector3 theZ2X_p3 = TVector3( thep4Z2inXFrame.X(), thep4Z2inXFrame.Y(), thep4Z2inXFrame.Z() );    
+    
+    	costhetastar = theZ1X_p3.CosTheta();
+    
+    //// --------------------------- costheta1
+    TVector3 boostV1 = -(thep4Z1.BoostVector());
+    TLorentzVector p4M11_BV1( p4M11 );
+	TLorentzVector p4M12_BV1( p4M12 );	
+    	p4M11_BV1.Boost( boostV1 );
+	p4M12_BV1.Boost( boostV1 );
+    	TLorentzVector p4V2_BV1 (p4Z2);
+	p4V2_BV1.Boost(boostV1);
+	//cout<<"Boost = "<<p4V2_BV1.Vect().Mag()<<endl;
+    //// costheta1
+    
+    	costheta1 = -p4V2_BV1.Vect().Dot( p4M11_BV1.Vect() )/p4V2_BV1.Vect().Mag()/p4M11_BV1.Vect().Mag();
+	//cout<<costheta1<<endl;
+    #if 0
+    //// --------------------------- costheta2
+    TVector3 boostV2 = -(thep4Z2.BoostVector());
+    TLorentzVector p4M11_BV2( p4M11 );
+	TLorentzVector p4M12_BV2( p4M12 );	
+    //TLorentzVector p4M21_BV2( p4M21 );
+//	TLorentzVector p4M22_BV2( p4M22 );
+    p4M11_BV2.Boost( boostV2 );
+	p4M12_BV2.Boost( boostV2 );
+//	p4M21_BV2.Boost( boostV2 );
+//	p4M22_BV2.Boost( boostV2 );
+    
+    TLorentzVector p4V1_BV2 = p4M11_BV2 + p4M12_BV2;
+    //// costheta2
+//    costheta2 = -p4V1_BV2.Vect().Dot( p4M21_BV2.Vect() )/p4V1_BV2.Vect().Mag()/p4M21_BV2.Vect().Mag();
+    #endif
+
+
+    //// --------------------------- Phi and Phi1
+    //    TVector3 boostX = -(thep4H.BoostVector());
+    TLorentzVector p4M11_BX( p4M11 );
+	TLorentzVector p4M12_BX( p4M12 );	
+ //   TLorentzVector p4M21_BX( p4M21 );
+//	TLorentzVector p4M22_BX( p4M22 );	
+    
+	p4M11_BX.Boost( boostX );
+	p4M12_BX.Boost( boostX );
+//	p4M21_BX.Boost( boostX );
+//	p4M22_BX.Boost( boostX );
+    
+    TVector3 tmp1 = p4M11_BX.Vect().Cross( p4M12_BX.Vect() );
+    //TVector3 tmp2 = tmp1;
+  //  TVector3 tmp2 = p4M21_BX.Vect().Cross( p4M22_BX.Vect() );    
+    
+    TVector3 normal1_BX( tmp1.X()/tmp1.Mag(), tmp1.Y()/tmp1.Mag(), tmp1.Z()/tmp1.Mag() ); 
+    //TVector3 normal2_BX( tmp2.X()/tmp2.Mag(), tmp2.Y()/tmp2.Mag(), tmp2.Z()/tmp2.Mag() ); 
+    
+    //// Phi
+    TLorentzVector p4Z1_BX = p4M11_BX + p4M12_BX;    
+   // double tmpSgnPhi = p4Z1_BX.Vect().Dot( normal1_BX.Cross( normal2_BX) );
+    //double sgnPhi = tmpSgnPhi/fabs(tmpSgnPhi);
+    //Phi = sgnPhi * acos( -1.*normal1_BX.Dot( normal2_BX) );
+    
+    
+    //////////////
+    
+    TVector3 beamAxis(0,0,1);
+    TVector3 tmp3 = (p4M11_BX + p4M12_BX).Vect();
+    
+    TVector3 p3V1_BX( tmp3.X()/tmp3.Mag(), tmp3.Y()/tmp3.Mag(), tmp3.Z()/tmp3.Mag() );
+    TVector3 tmp4 = beamAxis.Cross( p3V1_BX );
+    TVector3 normalSC_BX( tmp4.X()/tmp4.Mag(), tmp4.Y()/tmp4.Mag(), tmp4.Z()/tmp4.Mag() );
+    
+    //// Phi1
+    double tmpSgnPhi1 = p4Z1_BX.Vect().Dot( normal1_BX.Cross( normalSC_BX) );
+    double sgnPhi1 = tmpSgnPhi1/fabs(tmpSgnPhi1);    
+    Phi1 = sgnPhi1 * acos( normal1_BX.Dot( normalSC_BX) );    
+    
+    //    std::cout << "extractAngles: " << std::endl;
+    //    std::cout << "costhetastar = " << costhetastar << ", costheta1 = " << costheta1 << ", costheta2 = " << costheta2 << std::endl;
+    //    std::cout << "Phi = " << Phi << ", Phi1 = " << Phi1 << std::endl;    
+    
 }

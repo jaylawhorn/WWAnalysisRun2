@@ -10,13 +10,14 @@ import subprocess
 currentDir = os.getcwd();
 CMSSWDir =  currentDir+"/../";
 
+#inputFolder = "/store/user/lnujj/WpWm_aQGC_Ntuples_Ram/FirstStepOutput/Feb142016";
 inputFolder = "/store/user/lnujj/WpWm_aQGC_Ntuples_Ram/FirstStepOutput/Jan102016";
 outputFolder = currentDir+"/output/";
 exeName = "produceWWNtuples.exe";
 exePathName = currentDir+"/"+exeName;
 
 dryRun = False;
-doMC = False;
+doMC = True;
 doData = True;
 
 category = ["mu","el"];
@@ -151,7 +152,26 @@ nameDataMu = [
 "data_mu_2016_runG_v1_7",
 "data_mu_2016_runG_v1_8",
 "data_mu_2016_runG_v1_9",
-"data_mu_2016_runH_v3"
+"data_mu_2016_runH_v3",
+"data_mu_2016_runH_v2_1",
+"data_mu_2016_runH_v2_10",
+"data_mu_2016_runH_v2_11",
+"data_mu_2016_runH_v2_12",
+"data_mu_2016_runH_v2_13",
+"data_mu_2016_runH_v2_14",
+"data_mu_2016_runH_v2_15",
+"data_mu_2016_runH_v2_16",
+"data_mu_2016_runH_v2_17",
+"data_mu_2016_runH_v2_18",
+"data_mu_2016_runH_v2_19",
+"data_mu_2016_runH_v2_2",
+"data_mu_2016_runH_v2_3",
+"data_mu_2016_runH_v2_4",
+"data_mu_2016_runH_v2_5",
+"data_mu_2016_runH_v2_6",
+"data_mu_2016_runH_v2_7",
+"data_mu_2016_runH_v2_8",
+"data_mu_2016_runH_v2_9"
     ];
 
 nameDataEl = [
@@ -236,11 +256,44 @@ nameDataEl = [
 "data_el_2016_runH_v2_7",
 "data_el_2016_runH_v2_8",
 "data_el_2016_runH_v2_9",
-"data_el_2016_runH_v3"
+"data_el_2016_runH_v3",
+"data_el_2016_runB_v3_1",
+"data_el_2016_runB_v3_10",
+"data_el_2016_runB_v3_11",
+"data_el_2016_runB_v3_12",
+"data_el_2016_runB_v3_13",
+"data_el_2016_runB_v3_14",
+"data_el_2016_runB_v3_15",
+"data_el_2016_runB_v3_16",
+"data_el_2016_runB_v3_17",
+"data_el_2016_runB_v3_18",
+"data_el_2016_runB_v3_2",
+"data_el_2016_runB_v3_3",
+"data_el_2016_runB_v3_4",
+"data_el_2016_runB_v3_5",
+"data_el_2016_runB_v3_6",
+"data_el_2016_runB_v3_7",
+"data_el_2016_runB_v3_8",
+"data_el_2016_runB_v3_9",
+"data_el_2016_runE_v1_1",
+"data_el_2016_runE_v1_10",
+"data_el_2016_runE_v1_11",
+"data_el_2016_runE_v1_12",
+"data_el_2016_runE_v1_13",
+"data_el_2016_runE_v1_14",
+"data_el_2016_runE_v1_15",
+"data_el_2016_runE_v1_2",
+"data_el_2016_runE_v1_3",
+"data_el_2016_runE_v1_4",
+"data_el_2016_runE_v1_5",
+"data_el_2016_runE_v1_6",
+"data_el_2016_runE_v1_7",
+"data_el_2016_runE_v1_8",
+"data_el_2016_runE_v1_9"
 ];
 
 
-inputlist="PU.root, PUxSynch.root, SingleElectron_csc2015.txt,SingleElectron_ecalscn1043093.txt, SingleMuon_csc2015.txt,SingleMuon_ecalscn1043093.txt, ntupleList.txt,pileupDataRun2015D_72mb.root, pileupDataRun2016B_69mb.root,pileupDataRun2016B_71p3mb.root, pileupDataRun2016B_72mb.root, puppiJecCorr.root,python/produceWWNtuples.py,produceWWNtuples.exe, Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
+inputlist="PileUpData2016_23Sep2016ReReco_69200ub.root, PU.root, PUxSynch.root, SingleElectron_csc2015.txt,SingleElectron_ecalscn1043093.txt, SingleMuon_csc2015.txt,SingleMuon_ecalscn1043093.txt, ntupleList.txt, puppiJecCorr.root,python/produceWWNtuples.py,produceWWNtuples.exe, Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 
 nameData = {"el": nameDataEl, "mu":nameDataMu};
 

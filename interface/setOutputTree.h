@@ -217,6 +217,12 @@ class setOutputTree {
   float mass_lvj_type0_PuppiAK8;
   float mass_lvj_type2_PuppiAK8;
   float mass_lvj_run2_PuppiAK8;
+  float mt_lvj_type0_PuppiAK8;
+  float mt_lvj_type2_PuppiAK8;
+  float mt_lvj_run2_PuppiAK8;
+  float pt_lvj_type0_PuppiAK8;
+  float pt_lvj_type2_PuppiAK8;
+  float pt_lvj_run2_PuppiAK8;
   float mass_lvjj_type0_AK4;
   float mass_lvjj_type0_met_jes_up_AK4;
   float mass_lvjj_type0_met_jes_dn_AK4;
@@ -307,7 +313,11 @@ class setOutputTree {
 //  float AK4_2_e_gen;
 //  float AK4_2_mass_gen;
 //  float AK4_BIG_gen_mass;
-//  float deltaR_AK4;
+//  float deltaR_AK4;  
+  float costheta1;
+  float phi1;
+  float costhetastar;
+  float VBSCentrality;
 
   setOutputTree(TTree* outputTree);
   //  setOutputTree(TTree *outputTree=0);

@@ -4,13 +4,16 @@ hadd -f WWTree_data_mu_2016_runD_v1_mu.root WWTree_data_mu_2016_runD_v1_*_mu.roo
 hadd -f WWTree_data_mu_2016_runE_v1_mu.root WWTree_data_mu_2016_runE_v1_*_mu.root
 hadd -f WWTree_data_mu_2016_runF_v1_mu.root WWTree_data_mu_2016_runF_v1_*_mu.root
 hadd -f WWTree_data_mu_2016_runG_v1_mu.root WWTree_data_mu_2016_runG_v1_*_mu.root
-hadd -f WWTree_data_golden_B3C1D1E1F1G1H3.root WWTree_data_mu_2016_runB_v3_mu.root WWTree_data_mu_2016_runC_v1_mu.root WWTree_data_mu_2016_runD_v1_mu.root WWTree_data_mu_2016_runE_v1_mu.root WWTree_data_mu_2016_runF_v1_mu.root WWTree_data_mu_2016_runG_v1_mu.root WWTree_data_mu_2016_runH_v3_mu.root
-mv WWTree_data_mu_2016_runB_v3_*_mu.root others/
-mv WWTree_data_mu_2016_runC_v1_*_mu.root others/
-mv WWTree_data_mu_2016_runD_v1_*_mu.root others/
-mv WWTree_data_mu_2016_runE_v1_*_mu.root others/
-mv WWTree_data_mu_2016_runF_v1_*_mu.root others/
-mv WWTree_data_mu_2016_runG_v1_*_mu.root others/
+hadd -f WWTree_data_mu_2016_runH_v2_mu.root WWTree_data_mu_2016_runH_v2_*_mu.root
+hadd -f WWTree_data_golden_B3C1D1E1F1G1H3.root WWTree_data_mu_2016_runB_v3_mu.root WWTree_data_mu_2016_runC_v1_mu.root WWTree_data_mu_2016_runD_v1_mu.root WWTree_data_mu_2016_runE_v1_mu.root WWTree_data_mu_2016_runF_v1_mu.root WWTree_data_mu_2016_runG_v1_mu.root WWTree_data_mu_2016_runH_v3_mu.root WWTree_data_mu_2016_runH_v2_mu.root
+mv WWTree_data_mu_2016_runB_v3_*mu.root others/
+mv WWTree_data_mu_2016_runC_v1_*mu.root others/
+mv WWTree_data_mu_2016_runD_v1_*mu.root others/
+mv WWTree_data_mu_2016_runE_v1_*mu.root others/
+mv WWTree_data_mu_2016_runF_v1_*mu.root others/
+mv WWTree_data_mu_2016_runG_v1_*mu.root others/
+mv WWTree_data_mu_2016_runH_v2_*mu.root others/
+mv WWTree_data_mu_2016_runH_v3_mu.root others/
 
 hadd -f WWTree_DYJetsToLL_amcatnlo_ext1_mu.root WWTree_DYJetsToLL_amcatnlo_ext1_1_mu.root WWTree_DYJetsToLL_amcatnlo_ext1_2_mu.root
 hadd -f WWTree_Signal_LLpLTpTT_mu.root	WWTree_Signal_LL_mu.root WWTree_Signal_LT_mu.root WWTree_Signal_TT_mu.root
