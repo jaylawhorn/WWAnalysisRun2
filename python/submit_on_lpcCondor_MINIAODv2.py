@@ -340,4 +340,6 @@ for a in range(len(category)):
             outJDL.write("Queue\n");
 
 outJDL.close();
+print "===> Set Proxy Using:";
+print "\tvoms-proxy-init";
 print "\"condor_submit runstep2condor.jdl\" to submit";

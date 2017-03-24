@@ -58,6 +58,7 @@ class setOutputTree {
   float l_eta;
   float l_phi;
   float l_e;
+  float l_charge;
   float ungroomed_jet_pt;
   float ungroomed_jet_pt_jes_up;
   float ungroomed_jet_pt_jes_dn; 
@@ -223,6 +224,18 @@ class setOutputTree {
   float pt_lvj_type0_PuppiAK8;
   float pt_lvj_type2_PuppiAK8;
   float pt_lvj_run2_PuppiAK8;
+  float eta_lvj_type0_PuppiAK8;
+  float eta_lvj_type2_PuppiAK8;
+  float eta_lvj_run2_PuppiAK8;
+  float rapidity_lvj_type0_PuppiAK8;
+  float rapidity_lvj_type2_PuppiAK8;
+  float rapidity_lvj_run2_PuppiAK8;
+  float phi_lvj_type0_PuppiAK8;
+  float phi_lvj_type2_PuppiAK8;
+  float phi_lvj_run2_PuppiAK8;
+  float energy_lvj_type0_PuppiAK8;
+  float energy_lvj_type2_PuppiAK8;
+  float energy_lvj_run2_PuppiAK8;
   float mass_lvjj_type0_AK4;
   float mass_lvjj_type0_met_jes_up_AK4;
   float mass_lvjj_type0_met_jes_dn_AK4;
@@ -318,6 +331,12 @@ class setOutputTree {
   float phi1;
   float costhetastar;
   float VBSCentrality;
+  float TempLepWEta;
+  float TempLepWRapidity;
+  float TempHadWEta;
+  float TempHadWRapidity;
+  float TempWWEta;
+  float TempWWRapidity;
 
   setOutputTree(TTree* outputTree);
   //  setOutputTree(TTree *outputTree=0);

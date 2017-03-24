@@ -396,6 +396,7 @@ int main (int argc, char** argv)
 	WWTree->l_eta = ReducedTree->ElectronsEta[i];
 	WWTree->l_phi = ReducedTree->ElectronsPhi[i];	
 	WWTree->l_e= ReducedTree->ElectronsE[i];	
+	WWTree->l_charge= ReducedTree->Electrons_charge[i];
 	tempPt = WWTree->l_pt;
 	nTightLepton++;
       }
@@ -429,6 +430,7 @@ int main (int argc, char** argv)
 	WWTree->l_eta = ReducedTree->MuonsEta[i];
 	WWTree->l_phi = ReducedTree->MuonsPhi[i];
 	WWTree->l_e = ReducedTree->MuonsE[i];
+	WWTree->l_charge= ReducedTree->Muons_charge[i];
 	tempPt = WWTree->l_pt;
 	nTightLepton++;
       }
@@ -1233,15 +1235,37 @@ int main (int argc, char** argv)
     WWTree->mass_lvj_type0_met_jes_up = (LEP + NU0_jes_up + JET_jes_up).M();
     WWTree->mass_lvj_type0_met_jes_dn = (LEP + NU0_jes_dn + JET_jes_dn).M();
     
+    //cout<<"\n=================="<<endl;
+    //cout<<"Hadronic W:	Eta = "<<( JET_PuppiAK8).Eta()<<"\tRapidity = "<<( JET_PuppiAK8).Rapidity()<<endl;
+    //cout<<"Leptonic W:	Eta = "<<(LEP + NU0_puppi ).Eta()<<"\tRapidity = "<<(LEP + NU0_puppi).Rapidity()<<endl;
+    //cout<<"WW System:	Eta = "<<(LEP + NU0_puppi + JET_PuppiAK8).Eta()<<"\tRapidity = "<<(LEP + NU0_puppi + JET_PuppiAK8).Rapidity()<<endl;
+    WWTree->TempLepWEta = (LEP + NU0_puppi ).Eta();
+    WWTree->TempLepWRapidity = (LEP + NU0_puppi ).Rapidity();
+    WWTree->TempHadWEta = (JET_PuppiAK8 ).Eta();
+    WWTree->TempHadWRapidity = (JET_PuppiAK8 ).Rapidity();
+    WWTree->TempWWEta = (LEP + NU0_puppi + JET_PuppiAK8 ).Eta();
+    WWTree->TempWWRapidity = (LEP + NU0_puppi + JET_PuppiAK8 ).Rapidity();
+    WWTree->pt_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).Pt();
+    WWTree->pt_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).Pt();
+    WWTree->pt_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).Pt();
+    WWTree->eta_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).Eta();
+    WWTree->eta_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).Eta();
+    WWTree->eta_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).Eta();
+    WWTree->rapidity_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).Rapidity();
+    WWTree->rapidity_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).Rapidity();
+    WWTree->rapidity_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).Rapidity();
+    WWTree->phi_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).Phi();
+    WWTree->phi_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).Phi();
+    WWTree->phi_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).Phi();
+    WWTree->energy_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).E();
+    WWTree->energy_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).E();
+    WWTree->energy_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).E();
     WWTree->mass_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).M();
     WWTree->mass_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).M();
     WWTree->mass_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).M();
     WWTree->mt_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).Mt();
     WWTree->mt_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).Mt();
     WWTree->mt_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).Mt();
-    WWTree->pt_lvj_type0_PuppiAK8 = (LEP + NU0_puppi + JET_PuppiAK8).Pt();
-    WWTree->pt_lvj_type2_PuppiAK8 = (LEP + NU2_puppi + JET_PuppiAK8).Pt();
-    WWTree->pt_lvj_run2_PuppiAK8  = (LEP + NU1_puppi + JET_PuppiAK8).Pt();
     WWTree->mass_lvj_type0_met_PuppiAK8_jes_up = (LEP + NU0_jes_up + JET_PuppiAK8_jes_up).M();
     WWTree->mass_lvj_type0_met_PuppiAK8_jes_dn = (LEP + NU0_jes_dn + JET_PuppiAK8_jes_dn).M();
     
@@ -1730,7 +1754,7 @@ int main (int argc, char** argv)
     WWTree->costheta1 = (float) a_costheta1;                
     WWTree->costhetastar = (float) a_costhetastar;
     WWTree->phi1 = (float) a_Phi1;
-    WWTree->VBSCentrality = (fabs(VBF1.Rapidity()- (((LEP + NU0_puppi).Rapidity()+JET_PuppiAK8.Rapidity())/2.0)- VBF2.Rapidity() ))/fabs(VBF1.Rapidity() - VBF2.Rapidity());
+    WWTree->VBSCentrality = (fabs(VBF1.Rapidity()- (((LEP + NU0_puppi).Rapidity()+JET_PuppiAK8.Rapidity()))- VBF2.Rapidity() ))/fabs(VBF1.Rapidity() - VBF2.Rapidity());
 
     
     /////////////////FILL THE TREE
