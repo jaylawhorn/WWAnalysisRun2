@@ -39,9 +39,11 @@ double METzCalculator_Run2::Calculate(int type) {
 
     double pnu = MET_.E();
     double g =  TMath::Sqrt( (1. - az*az) * pnu*pnu );
-    double gg = g - (pxmu*pxnu + pxmu*pxnu)/emu ;
+    double gg = g - (pxmu*pxnu + pymu*pynu)/emu ;
     double mmw = TMath::Sqrt(2.*emu*gg);
    
+   //std::cout<<"============\n\n\nChanged mW = "<<mmw<<std::endl;
+
     double dd = (mmw*mmw/2. + pxnu*pxmu + pynu*pymu)/emu;
     double BB = 2*dd*az/(az*az-1);
     pznu = - BB/2.;
@@ -52,14 +54,22 @@ double METzCalculator_Run2::Calculate(int type) {
     if( mmw < 76 || mmw > 84 ) {
       Ctype_=2;
       g = TMath::Sqrt( 1. - az*az);
-      double gg = g - (pxmu*pxnu + pxmu*pxnu)/(emu*pnu) ;
+      double gg = g - (pxmu*pxnu + pymu*pynu)/(emu*pnu) ;
       double metrec = M_W * M_W / ( 2.*emu*gg);
       double mmetx = metrec * pxnu / pnu ;
       double mmety = metrec * pynu / pnu ;
       d = (M_W*M_W/2. + mmetx*pxmu + mmety*pymu)/emu;
       B = 2*d*az/(az*az-1);
       pznu = - B/2.;
+//      pxnu = mmetx;
+//      pynu = mmety;
+//      std::cout<<"***\tVary METx & METy\t****"<<std::endl;
     }
+//    TLorentzVector TLV_Lep;
+//    TLV_Lep.SetPxPyPzE(pxmu, pymu, pzmu, emu);
+//    TLorentzVector TLV_Nu;
+//    TLV_Nu.SetPxPyPzE(pxnu, pynu, pznu, pnu);
+//  std::cout<<"W-Boson mass (after finalizing pz) = "<<(TLV_Lep+TLV_Nu).M()<<std::endl;;
   }
   else {
     isComplex_ = false;
