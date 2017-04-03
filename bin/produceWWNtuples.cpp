@@ -1773,7 +1773,7 @@ int main (int argc, char** argv)
     WWTree->costhetastar_run2 = (float) a_costhetastar;
     WWTree->phi1_run2 = (float) a_Phi1;
 
-    if (fabs(VBF1.Rapidity() - VBF2.Rapidity()) == 0.0)
+    if (fabs(VBF1.Eta() - VBF2.Eta()) == 0.0)
     {
     	 WWTree->VBSCentrality_type0 = -999.0;
     	 WWTree->VBSCentrality_type2 = -999.0;
@@ -1781,9 +1781,9 @@ int main (int argc, char** argv)
     }
     else
     {
-    	WWTree->VBSCentrality_type0 = (fabs(VBF1.Rapidity()- (((LEP + NU0_puppi).Rapidity()+JET_PuppiAK8.Rapidity()))- VBF2.Rapidity() ))/fabs(VBF1.Rapidity() - VBF2.Rapidity());
-    	WWTree->VBSCentrality_type2 = (fabs(VBF1.Rapidity()- (((LEP + NU2_puppi).Rapidity()+JET_PuppiAK8.Rapidity()))- VBF2.Rapidity() ))/fabs(VBF1.Rapidity() - VBF2.Rapidity());
-    	WWTree->VBSCentrality_run2 = (fabs(VBF1.Rapidity()- (((LEP + NU1_puppi).Rapidity()+JET_PuppiAK8.Rapidity()))- VBF2.Rapidity() ))/fabs(VBF1.Rapidity() - VBF2.Rapidity());
+    	WWTree->VBSCentrality_type0 = (fabs(VBF1.Eta()- (((LEP + NU0_puppi).Rapidity()+JET_PuppiAK8.Rapidity()))- VBF2.Eta() ))/fabs(VBF1.Eta() - VBF2.Eta());
+    	WWTree->VBSCentrality_type2 = (fabs(VBF1.Eta()- (((LEP + NU2_puppi).Rapidity()+JET_PuppiAK8.Rapidity()))- VBF2.Eta() ))/fabs(VBF1.Eta() - VBF2.Eta());
+    	WWTree->VBSCentrality_run2 = (fabs(VBF1.Eta()- (((LEP + NU1_puppi).Rapidity()+JET_PuppiAK8.Rapidity()))- VBF2.Eta() ))/fabs(VBF1.Eta() - VBF2.Eta());
     }
      WWTree->RpT_type0 = (JET_PuppiAK8.Pt()*(LEP + NU0_puppi).Pt())/(VBF1.Pt()*VBF2.Pt());
      WWTree->RpT_type2 = (JET_PuppiAK8.Pt()*(LEP + NU2_puppi).Pt())/(VBF1.Pt()*VBF2.Pt());
