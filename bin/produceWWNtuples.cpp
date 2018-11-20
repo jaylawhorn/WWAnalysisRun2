@@ -60,34 +60,34 @@ using namespace std;
 
 //*******MAIN*******************************************************************
 
-int main (int argc, char** argv)
-{ 
+int main (int argc, char** argv) { 
   
   int t0 = time(NULL);
   
-  std::string inputFolder = argv[1];
-  std::string outputFile = argv[2];
+  string inputFolder = argv[1];
+  string outputFile = argv[2];
   int isMC = atoi(argv[3]);
-  std::string cluster = argv[4];
-  std::string inputTreeName = argv[5];
-  std::string inputFile = argv[6];
-  std::string xSecWeight = argv[7];
-  std::string TotalNumberOfEntries = argv[8];
-  std::string TotalNumberOfNegativeEntries = argv[9];
+  string cluster = argv[4];
+  string inputTreeName = argv[5];
+  string inputFile = argv[6];
+  string xSecWeight = argv[7];
+  string TotalNumberOfEntries = argv[8];
+  string TotalNumberOfNegativeEntries = argv[9];
   int applyTrigger = atoi(argv[10]);
-  std::string jsonFileName = argv[11];
+  string jsonFileName = argv[11];
   int isLocal = atoi(argv[12]);
   int VBFSel  = atoi(argv[13]);
   
-  std::string leptonName;
+  string leptonName; // why?
 
-  if ( VBFSel==1)	cout<<"==> VBF selection method : Select two highest pT jets"<<endl;
-  else if ( VBFSel==2)	cout<<"==> VBF selection method : Select pair with highest mjj..."<<endl;
-  else if ( VBFSel==3)	cout<<"==> VBF selection method : Select pair with highest DeltaEta..."<<endl;
-  else {	cout<<"\n\nERROR:	Enter valid vbf selection criteria....\n\n"<<endl;
-  		exit(0);  
-	}
-
+  if      ( VBFSel==1) { cout << "==> VBF selection method : Select two highest pT jets" << endl; }
+  else if ( VBFSel==2) { cout << "==> VBF selection method : Select pair with highest mjj..." << endl; }
+  else if ( VBFSel==3) { cout << "==> VBF selection method : Select pair with highest DeltaEta..." << endl; }
+  else {	
+    cout<<"\n\nERROR:	Enter valid vbf selection criteria....\n\n"<<endl;		
+    exit(0);  
+  }
+  
   // gen-level cuts
   const float LEP_PT_GEN_CUT = 30;
   const float LEP_ETA_GEN_CUT = 2.5;
@@ -129,17 +129,22 @@ int main (int argc, char** argv)
   //misc
   const int RUN_BOUND = 278820;
 
-  std::string iHLTFile="${CMSSW_BASE}/src/BaconAna/DataFormats/data/HLTFile_25ns";
-  const std::string cmssw_base = getenv("CMSSW_BASE");
-  std::string cmssw_base_env = "${CMSSW_BASE}";
+  sstring iHLTFile="${CMSSW_BASE}/src/BaconAna/DataFormats/data/HLTFile_25ns";
+  const string cmssw_base = getenv("CMSSW_BASE");
+  string cmssw_base_env = "${CMSSW_BASE}";
   size_t start_pos = iHLTFile.find(cmssw_base_env);
-  if(start_pos != std::string::npos) {
+  if(start_pos != string::npos) {
   	iHLTFile.replace(start_pos, cmssw_base_env.length(), cmssw_base);
   }
 
   const baconhep::TTrigger triggerMenu(iHLTFile);  
-  std::cout<<"Apply trigger: "<<applyTrigger<<std::endl;
+  cout<<"Apply trigger: "<<applyTrigger<<endl;
 
+  vector<TString> triggerPaths;
+  triggerPaths.push_back("HLT_IsoMu24_v*");
+  triggerPaths.push_back("HLT_IsoTkMu24_v*");
+  triggerPaths.push_back("HLT_Ele27_WPTight_Gsf_v*");
+  
   TLorentzVector W_type0,W_type0_jes_up, W_type0_jes_dn, W_type0_jer_up, W_type0_jer_dn, W_type2, W_run2,W_puppi_type2, W_puppi_type0, W_puppi_run2;
   TLorentzVector LEP1, LEP2, SJ1_PuppiAK8, SJ2_PuppiAK8, SJ1, SJ2;
   TLorentzVector NU0,NU1,NU2,NU0_puppi,NU1_puppi,NU2_puppi;
@@ -157,13 +162,14 @@ int main (int argc, char** argv)
   TLorentzVector VBF1,VBF2,TOT;
   TLorentzVector VBF1_jes_up, VBF1_jes_dn, VBF2_jes_up, VBF2_jes_dn;
   TLorentzVector ELE,MU;
-
   
-  std::vector<TLorentzVector> tightMuon;
-  std::vector<TLorentzVector> looseMuon;
-  std::vector<TLorentzVector> tightEle;
-  std::vector<TLorentzVector> looseEle;
-  std::vector<TLorentzVector> goodAK4Jets;
+  int nLooseMuon;
+  vector<TLorentzVector> tightMuon;
+  //vector<TLorentzVector> looseMuon;
+  vector<TLorentzVector> tightEle;
+  int nLooseEle;
+  //vector<TLorentzVector> looseEle;
+  vector<TLorentzVector> goodAK4Jets;
 
   int ok=0, total=0;
   
@@ -177,8 +183,7 @@ int main (int argc, char** argv)
   TClonesArray *jetArr		= new TClonesArray("baconhep::TJet");
   TClonesArray *vjetArrPuppi	= new TClonesArray("baconhep::TJet");
   TClonesArray *vjetAddArrPuppi	= new TClonesArray("baconhep::TAddJet");
-  TClonesArray *lheWgtArr	= new TClonesArray("baconhep::TLHEWeight");
-  
+  TClonesArray *lheWgtArr	= new TClonesArray("baconhep::TLHEWeight");  
 
   char command1[3000];
   char command2[3000];
@@ -204,13 +209,12 @@ int main (int argc, char** argv)
 
   vector<TString>  sampleName; 
 
-  while (!rootList.eof())
-  {
-	char iRun_tW[700];
-	rootList >> iRun_tW;
-	if(!rootList.good())break;
-	sampleName.push_back(iRun_tW);
-	fileCounter++;
+  while (!rootList.eof()) {
+    char iRun_tW[700];
+    rootList >> iRun_tW;
+    if(!rootList.good())break;
+    sampleName.push_back(iRun_tW);
+    fileCounter++;
   }
 
   TFile *infile=0;
@@ -222,6 +226,7 @@ int main (int argc, char** argv)
   TH1D* puWeights = (TH1D*)pileupFileMC->Get("puWeights");
   TH1D* puWeightsUp = (TH1D*)pileupFileMC->Get("puWeightsUp");
   TH1D* puWeightsDown = (TH1D*)pileupFileMC->Get("puWeightsDown");
+
   puWeights->SetBins(75,0,75);
   puWeightsUp->SetBins(75,0,75);
   puWeightsDown->SetBins(75,0,75);
@@ -261,7 +266,6 @@ int main (int argc, char** argv)
   TF1* puppisd_corrRECO_cen = (TF1*)file->Get("puppiJECcorr_reco_0eta1v3");
   TF1* puppisd_corrRECO_for = (TF1*)file->Get("puppiJECcorr_reco_1v3eta2v5");
 
-
   //---------output tree----------------
   TFile* outROOT = TFile::Open((outputFile+(".root")).c_str(),"recreate");
   outROOT->cd();
@@ -274,7 +278,7 @@ int main (int argc, char** argv)
 
   int nInputFiles = sampleName.size();
 
-  if (isLocal==1) nInputFiles = 21;
+  if (isLocal==1) nInputFiles = 21; //HARDCODED
   cout<<"==> Total number of input files : "<<nInputFiles<<endl;
 
   TH1D *MCpu = new TH1D("MCpu","",75,0,75);
@@ -345,62 +349,99 @@ int main (int argc, char** argv)
   //---------start loop on events------------
   std::cout << "---------start loop on events------------" << std::endl;
   jentry2=0;
-  for(int i=0;i<nInputFiles;i++)
-  {
-  cout<<"\n\n=====	Processing File Number : "<<i<<"/"<<nInputFiles<<"\n\t"<<sampleName[i]<<"\n-------"<<endl;
+  for(int i=0;i<nInputFiles;i++) {
+    cout<<"\n\n=====	Processing File Number : "<<i<<"/"<<nInputFiles<<"\n\t"<<sampleName[i]<<"\n-------"<<endl;
 
-  infile = TFile::Open(sampleName[i]);
-  eventTree = (TTree*)infile->Get("Events");
-  
-  totalEntries+=eventTree->GetEntries();
-
-  nEvents=eventTree->GetEntries();
-
-  cout<<"\t==> Entries = "<<nEvents<<endl;
-
-
-
-  eventTree->SetBranchAddress("Info", &info);    TBranch *infoBr = eventTree->GetBranch("Info");
-  eventTree->SetBranchAddress("Muon", &muonArr); TBranch *muonBr = eventTree->GetBranch("Muon");
-  eventTree->SetBranchAddress("Electron", &electronArr); TBranch *electronBr = eventTree->GetBranch("Electron");
-  eventTree->SetBranchAddress("PV",   &vertexArr); TBranch *vertexBr = eventTree->GetBranch("PV");
-  eventTree->SetBranchAddress("AK4CHS",   &jetArr); TBranch *jetBr = eventTree->GetBranch("AK4CHS");    
-  eventTree->SetBranchAddress("AK8Puppi",   &vjetArrPuppi); TBranch *vjetBrPuppi = eventTree->GetBranch("AK8Puppi");  
-  eventTree->SetBranchAddress("AddAK8Puppi",   &vjetAddArrPuppi); TBranch *vjetAddBrPuppi = eventTree->GetBranch("AddAK8Puppi");  
-  TBranch *genBr=0, *genPartBr=0, *lhePartBr=0;
-  if(isMC)
-     { 
-       eventTree->SetBranchAddress("GenEvtInfo", &gen); genBr = eventTree->GetBranch("GenEvtInfo");
-       eventTree->SetBranchAddress("GenParticle",&genPartArr); genPartBr = eventTree->GetBranch("GenParticle");
-       if(eventTree->GetListOfBranches()->FindObject("LHEWeight"))
-       {
-       eventTree->SetBranchAddress("LHEWeight",&lheWgtArr); lhePartBr = eventTree->GetBranch("LHEWeight");	       }
-     }
-
-  //for (Long64_t jentry=0; jentry<172; jentry++,jentry2++)
-  for (Long64_t jentry=0; jentry<eventTree->GetEntries();jentry++,jentry2++)
-  {
-    //if (jentry2 != 87 && jentry2 != 113) continue;	// For debug
-    infoBr->GetEntry(jentry);	    
-
-    int GenPassCut = 0;
-
-    tightMuon.clear();
-    tightEle.clear();
-    looseMuon.clear();
-    looseEle.clear();
+    infile = TFile::Open(sampleName[i]);
+    eventTree = (TTree*)infile->Get("Events");
     
-
-    if (jentry2%10000 == 0) std::cout << "\tread entry: " << jentry2 <<"/"<<TotalNumberOfEvents<<std:: endl;
+    totalEntries+=eventTree->GetEntries();
     
-    //*********************************
-    WWTree->initializeVariables(); //initialize all variables
+    nEvents=eventTree->GetEntries();
+    
+    cout<<"\t==> Entries = "<<nEvents<<endl;
+    
+    eventTree->SetBranchAddress("Info", &info);    TBranch *infoBr = eventTree->GetBranch("Info");
+    eventTree->SetBranchAddress("Muon", &muonArr); TBranch *muonBr = eventTree->GetBranch("Muon");
+    eventTree->SetBranchAddress("Electron", &electronArr); TBranch *electronBr = eventTree->GetBranch("Electron");
+    eventTree->SetBranchAddress("PV",   &vertexArr); TBranch *vertexBr = eventTree->GetBranch("PV");
+    eventTree->SetBranchAddress("AK4CHS",   &jetArr); TBranch *jetBr = eventTree->GetBranch("AK4CHS");    
+    eventTree->SetBranchAddress("AK8Puppi",   &vjetArrPuppi); TBranch *vjetBrPuppi = eventTree->GetBranch("AK8Puppi");  
+    eventTree->SetBranchAddress("AddAK8Puppi",   &vjetAddArrPuppi); TBranch *vjetAddBrPuppi = eventTree->GetBranch("AddAK8Puppi");  
+    
+    TBranch *genBr=0, *genPartBr=0, *lhePartBr=0;
+    if(isMC) { 
+      eventTree->SetBranchAddress("GenEvtInfo", &gen); genBr = eventTree->GetBranch("GenEvtInfo");
+      eventTree->SetBranchAddress("GenParticle",&genPartArr); genPartBr = eventTree->GetBranch("GenParticle");
+      if(eventTree->GetListOfBranches()->FindObject("LHEWeight")) {
+	eventTree->SetBranchAddress("LHEWeight",&lheWgtArr); lhePartBr = eventTree->GetBranch("LHEWeight");	       
+      }
+    }
+    
+    for (Long64_t jentry=0; jentry<eventTree->GetEntries();jentry++) {
+      infoBr->GetEntry(jentry);	    
+      vertexArr->Clear(); vertexBr->GetEntry(jentry);
+      electronArr->Clear(); electronBr->GetEntry(jentry);
+      muonArr->Clear(); muonBr->GetEntry(jentry);
+      jetArr->Clear(); jetBr->GetEntry(jentry);
+      vjetArrPuppi->Clear(); vjetBrPuppi->GetEntry(jentry);
+      vjetAddArrPuppi->Clear(); vjetAddBrPuppi->GetEntry(jentry);
 
-    WWTree->run   = info->runNum;
-    WWTree->event = info->evtNum;
-    WWTree->lumi  = info->lumiSec;
+      nLooseEle=0; nLooseMuon=0;
+      tightMuon.clear(); //looseMuon.clear();
+      tightEle.clear(); //looseEle.clear();
+      goodAK4Jets.clear();
+      
+      WWTree->initializeVariables(); //initialize all variables
+      
+      if (jentry%10000 == 0) std::cout << "\tread entry: " << jentry <<"/"<<TotalNumberOfEvents<<std:: endl;
+      
+      //trigger
+      if(applyTrigger==1) { 
+	bool passedTrigger=false;
+	for (uint k=0; k<triggerPaths.size(); k++) {
+	  if (triggerMenu.pass(triggerPaths.at(k),info->triggerBits)) passedTrigger=true;
+	}
+	if (!passedTrigger) continue;
+      }
+
+      //require at least one lepton
+      if (muonArr->GetEntries()+electronArr->GetEntries()<1) continue;
+      // if no fat jets, at least 4 ak4 jets
+      if (vjetArrPuppi->GetEntries()<1 && jetArr->GetEntries()<4) continue;
+      // at least 2 ak4 jets (vbf jets)
+      if (jetArr->GetEntries()<2) continue;
 
 
+      //LEPTONS
+      
+      for (int i=0; i<electronArr->GetEntries(); i++) {
+	const baconhep::TElectron *ele = (baconhep::TElectron*)((*electronArr)[i]);
+
+	if (ele->pt<=LEP_PT_VETO_CUT || fabs(ele->eta)>=EL_ETA_CUT) continue;
+	if(!passEleLooseSel(ele,info->rhoIso)) continue;
+	nLooseEle++;
+	
+	if(!passEleTightSel(ele,info->rhoIso)) continue;
+	ELE.SetPtEtaPhiM(ele->pt,ele->eta,ele->phi,EL_MASS);
+	tightEle.push_back(ELE);
+
+	iso = ele->chHadIso + TMath::Max( 0.0,(ele->gammaIso + ele->neuHadIso - info->rhoIso*eleEffArea(ele->eta)) );
+
+	if (
+
+      }
+
+      
+
+      
+      //*********************************
+
+      WWTree->run   = info->runNum;
+      WWTree->event = info->evtNum;
+      WWTree->lumi  = info->lumiSec;
+
+      int GenPassCut = 0;
     /////////////////MC Info
     if (isMC==1)
     {
@@ -435,12 +476,12 @@ int main (int argc, char** argv)
 	      genNeutrino.SetPtEtaPhiM(genloop->pt, genloop->eta, genloop->phi, genloop->mass);
 	      v_genNeutrino.push_back(genNeutrino);
 	    }
-	  if( (abs(genloop->pdgId) == 1 || abs(genloop->pdgId) == 3 || abs(genloop->pdgId) == 5 || abs(genloop->pdgId) == 2 || abs(genloop->pdgId) == 4 || abs(genloop->pdgId) == 6) && abs(parentPdg) == 24)
+	  if( (abs(genloop->pdgId) >= 1 && abs(genloop->pdgId) <= 6) && abs(parentPdg) == 24)
 	    {
 	      genWquarks.SetPtEtaPhiM(genloop->pt, genloop->eta, genloop->phi, genloop->mass);
 	      v_genWquarks.push_back(genWquarks);
 	    }
-	  if( (abs(genloop->pdgId) == 1 || abs(genloop->pdgId) == 3 || abs(genloop->pdgId) == 5 || abs(genloop->pdgId) == 2 || abs(genloop->pdgId) == 4 || abs(genloop->pdgId) == 6) && genloop->status == 23 && abs(parentPdg) != 24)
+	  if( (abs(genloop->pdgId) >= 1 && abs(genloop->pdgId) <= 6) && genloop->status == 23 && abs(parentPdg) != 24)
 	    {
 	      genVBFquarks.SetPtEtaPhiM(genloop->pt, genloop->eta, genloop->phi, genloop->mass);
 	      v_genVBFquarks.push_back(genVBFquarks);
@@ -474,13 +515,13 @@ int main (int argc, char** argv)
 	  WWTree->AK4_1_eta_gen	= v_genVBFquarks[0].Eta();
 	  WWTree->AK4_1_phi_gen	= v_genVBFquarks[0].Phi();
 	  WWTree->AK4_1_e_gen	= v_genVBFquarks[0].E();
-	  WWTree->AK4_1_mass_gen	= v_genVBFquarks[0].M();
+	  WWTree->AK4_1_mass_gen = v_genVBFquarks[0].M();
 	  
 	  WWTree->AK4_2_pt_gen	= v_genVBFquarks[1].Pt();
 	  WWTree->AK4_2_eta_gen	= v_genVBFquarks[1].Eta();
 	  WWTree->AK4_2_phi_gen	= v_genVBFquarks[1].Phi();
 	  WWTree->AK4_2_e_gen	= v_genVBFquarks[1].E();
-	  WWTree->AK4_2_mass_gen	= v_genVBFquarks[1].M();
+	  WWTree->AK4_2_mass_gen = v_genVBFquarks[1].M();
 	  
 	  WWTree->AK4_jj_DeltaEta_gen = abs(v_genVBFquarks[0].Eta() - v_genVBFquarks[1].Eta());
 	  WWTree->AK4_jj_mass_gen = (v_genVBFquarks[0] + v_genVBFquarks[1]).M();
@@ -492,12 +533,11 @@ int main (int argc, char** argv)
 	     WWTree->AK4_jj_DeltaEta_gen > DELTA_ETA_JJ_GEN_CUT && WWTree->AK4_jj_mass_gen > M_JJ_GEN_CUT && 
 	     WWTree->hadW_pt_gen > V_J_PT_GEN_CUT ) {
 	        GenPassCut = 1;
-	 }
-    	for (int i = 0; i<lheWgtArr->GetEntries();i++)     // Note that i is starting from 446.
-	{
-		const baconhep::TLHEWeight *lhe = (baconhep::TLHEWeight*)((*lheWgtArr)[i]);
-		//WWTree->LHEid[i] = lhe->id;
-		WWTree->LHEWeight[i] = lhe->weight;
+	}
+    	for (int i = 0; i<lheWgtArr->GetEntries();i++) {    // Note that i is starting from 446.
+	  const baconhep::TLHEWeight *lhe = (baconhep::TLHEWeight*)((*lheWgtArr)[i]);
+	  //WWTree->LHEid[i] = lhe->id;
+	  WWTree->LHEWeight[i] = lhe->weight;
 	}
     }
 
@@ -528,8 +568,6 @@ int main (int argc, char** argv)
     }
 
     
-    vertexArr->Clear();
-    vertexBr->GetEntry(jentry);
     WWTree->nPV = vertexArr->GetEntries();
   
     //PILE-UP WEIGHT
@@ -548,17 +586,10 @@ int main (int argc, char** argv)
        } 
     }
 
-    if(applyTrigger==1) //HARDCODED
-      if(!(triggerMenu.pass("HLT_IsoMu24_v*",info->triggerBits) || triggerMenu.pass("HLT_IsoTkMu24_v*",info->triggerBits) ||  triggerMenu.pass("HLT_Ele27_WPTight_Gsf_v*",info->triggerBits))) continue;
-  
     /////////////////THE SELECTED LEPTON
-    int nTightEle=0, nLooseEle=0;
+    int nTightEl=0, nLooseEl=0;
     int nTightMu=0, nLooseMu=0;
-    //double pt_cut = 20;
-    //double leadelept_cut = 30;
-    //double leadmupt_cut = 27;
-    electronArr->Clear();
-    electronBr->GetEntry(jentry);
+
     const baconhep::TElectron *leadele = NULL;
     const baconhep::TElectron *subele = NULL;
     double leadeleE=-999, subeleE=-999;
@@ -605,8 +636,6 @@ int main (int argc, char** argv)
 	WWTree->l_e2 = subeleE;
 	WWTree->l_charge2 = subele->q;
       }
-    muonArr->Clear();
-    muonBr->GetEntry(jentry);
     const baconhep::TMuon *leadmu = NULL;
     const baconhep::TMuon *submu = NULL;
     double leadmue=-999, submue = -999;
@@ -759,8 +788,6 @@ int main (int argc, char** argv)
     //		MET JES Calculate
     //
     ////////////////////////////////////////////////////////////////
-    jetArr->Clear();
-    jetBr->GetEntry(jentry);
     for ( int i=0; i<jetArr->GetEntries(); i++) //loop on AK4 jet
     {
       const baconhep::TJet *jet = (baconhep::TJet*)((*jetArr)[i]);
@@ -972,10 +999,6 @@ int main (int argc, char** argv)
   
       
     ///////////THE FAT JET - PuppiAK8
-    vjetArrPuppi->Clear();
-    vjetBrPuppi->GetEntry(jentry);
-    vjetAddArrPuppi->Clear();
-    vjetAddBrPuppi->GetEntry(jentry);
     double tempTTbarMass=0.;
     double tempMassW = 3000.0;
     int nGoodPuppiAK8jets=0;
@@ -1143,8 +1166,8 @@ int main (int argc, char** argv)
     }
     else { // resolved dijet selection
 
-      jetArr->Clear();
-      jetBr->GetEntry(jentry);
+      //jetArr->Clear();
+      //jetBr->GetEntry(jentry);
       for ( int i=0; i<jetArr->GetEntries(); i++) //loop on AK4 jet                                                                     
         {
           const baconhep::TJet *jet = (baconhep::TJet*)((*jetArr)[i]);
@@ -1322,8 +1345,8 @@ int main (int argc, char** argv)
     std::vector<int> indexGoodVBFJets;
 
 
-    jetArr->Clear();
-    jetBr->GetEntry(jentry);
+    //jetArr->Clear();
+    //jetBr->GetEntry(jentry);
     for ( int i=0; i<jetArr->GetEntries(); i++) //loop on AK4 jet
     {
       const baconhep::TJet *jet = (baconhep::TJet*)((*jetArr)[i]);
